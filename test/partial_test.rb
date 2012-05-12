@@ -14,7 +14,7 @@ end_partial
 
   def test_partial_with_slashes
     klass = Class.new(Mustache)
-    klass.template = '{{> test/fixtures/inner_partial}}'
+    klass.template = '%%> test/fixtures/inner_partial%%'
     view = klass.new
     view[:title] = 'success'
 
@@ -29,9 +29,9 @@ end_partial
     view.template = <<-end_template
 <h1>Context Test</h1>
 <ul>
-{{#titles}}
-<li>{{>inner_partial}}</li>
-{{/titles}}
+%%#titles%%
+<li>%%>inner_partial%%</li>
+%%/titles%%
 </ul>
 end_template
     assert_equal <<-end_partial, view.render
@@ -53,9 +53,9 @@ end_partial
     view.template = <<-end_template
 <h1>Context Test</h1>
 <ul>
-{{#titles}}
-<li>{{>inner_partial}}</li>
-{{/titles}}
+%%#titles%%
+<li>%%>inner_partial%%</li>
+%%/titles%%
 </ul>
 end_template
     assert_equal <<-end_partial, view.render
@@ -135,16 +135,16 @@ end_partial
   end
 
   def test_partials_use_proper_context
-    assert_equal "OuterThing OuterThing", OuterThing.render('{{name}} {{> p}}')
+    assert_equal "OuterThing OuterThing", OuterThing.render('%%name%% %%> p%%')
 
-    assert_equal "InnerThing InnerThing", InnerThing.render('{{name}} {{> p}}')
+    assert_equal "InnerThing InnerThing", InnerThing.render('%%name%% %%> p%%')
 
     assert_equal "OuterThing InnerThing InnerThing",
-      OuterThing.render('{{name}} {{#inner}}{{name}} {{> p}}{{/inner}}')
+      OuterThing.render('%%name%% %%#inner%%%%name%% %%> p%%%%/inner%%')
   end
 
   def test_partials_render_returned_strings
-    assert_equal "ok", MiddleThing.render('{{> some_partial }}')
+    assert_equal "ok", MiddleThing.render('%%> some_partial %%')
   end
 end
 
@@ -163,6 +163,6 @@ class OuterThing < Mustache
 end
 
 class MiddleThing < Mustache
-  def partial(name) "{{#{name}}}" end
+  def partial(name) "%%#{name}%%" end
   def some_partial; "ok" end
 end

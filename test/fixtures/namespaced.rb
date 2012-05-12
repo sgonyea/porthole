@@ -12,7 +12,7 @@ module TestViews
 
   class NamespacedWithPartial < Mustache
     self.path = File.dirname(__FILE__)
-    self.template = "My opinion: {{>inner_partial}}"
+    self.template = "My opinion: %%>inner_partial%%"
 
     def title
       "Victory"

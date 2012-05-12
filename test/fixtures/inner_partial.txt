@@ -1,1 +1,1 @@
-## Again, {{title}}! ##
+## Again, %%title%%! ##

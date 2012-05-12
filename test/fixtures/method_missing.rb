@@ -2,7 +2,7 @@ $LOAD_PATH.unshift File.dirname(__FILE__) + '/../lib'
 require 'mustache'
 
 class MethodMissing < Mustache
-  self.template = '[ {{#list}}{{.}} {{/list}}]'
+  self.template = '[ %%#list%%%%.%% %%/list%%]'
 
   def method_missing(name, *args, &block)
     return (0..10).to_a if name == :list

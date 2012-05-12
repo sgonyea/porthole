@@ -67,12 +67,12 @@ EOF
 
     # The opening tag delimiter. This may be changed at runtime.
     def otag
-      @otag ||= '{{'
+      @otag ||= '%%'
     end
 
     # The closing tag delimiter. This too may be changed at runtime.
     def ctag
-      @ctag ||= '}}'
+      @ctag ||= '%%'
     end
 
     # Given a string template, returns an array of tokens.

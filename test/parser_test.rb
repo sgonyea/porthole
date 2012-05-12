@@ -5,19 +5,19 @@ class ParserTest < Test::Unit::TestCase
   def test_parser
     lexer = Mustache::Parser.new
     tokens = lexer.compile(<<-EOF)
-<h1>{{header}}</h1>
-{{#items}}
-{{#first}}
-  <li><strong>{{name}}</strong></li>
-{{/first}}
-{{#link}}
-  <li><a href="{{url}}">{{name}}</a></li>
-{{/link}}
-{{/items}}
+<h1>%%header%%</h1>
+%%#items%%
+%%#first%%
+  <li><strong>%%name%%</strong></li>
+%%/first%%
+%%#link%%
+  <li><a href="%%url%%">%%name%%</a></li>
+%%/link%%
+%%/items%%
 
-{{#empty}}
+%%#empty%%
 <p>The list is empty.</p>
-{{/empty}}
+%%/empty%%
 EOF
 
     expected = [:multi,
@@ -35,8 +35,8 @@ EOF
               [:static, "  <li><strong>"],
               [:mustache, :etag, [:mustache, :fetch, ["name"]]],
               [:static, "</strong></li>\n"]],
-            %Q'  <li><strong>{{name}}</strong></li>\n',
-            %w[{{ }}]],
+            %Q'  <li><strong>%%name%%</strong></li>\n',
+            %w[%% %%]],
           [:mustache,
             :section,
             [:mustache, :fetch, ["link"]],
@@ -46,24 +46,24 @@ EOF
               [:static, "\">"],
               [:mustache, :etag, [:mustache, :fetch, ["name"]]],
               [:static, "</a></li>\n"]],
-            %Q'  <li><a href="{{url}}">{{name}}</a></li>\n',
-            %w[{{ }}]]],
-        %Q'{{#first}}\n  <li><strong>{{name}}</strong></li>\n{{/first}}\n{{#link}}\n  <li><a href="{{url}}">{{name}}</a></li>\n{{/link}}\n',
-        %w[{{ }}]],
+            %Q'  <li><a href="%%url%%">%%name%%</a></li>\n',
+            %w[%% %%]]],
+        %Q'%%#first%%\n  <li><strong>%%name%%</strong></li>\n%%/first%%\n%%#link%%\n  <li><a href="%%url%%">%%name%%</a></li>\n%%/link%%\n',
+        %w[%% %%]],
       [:static, "\n"],
       [:mustache,
         :section,
         [:mustache, :fetch, ["empty"]],
         [:multi, [:static, "<p>The list is empty.</p>\n"]],
         %Q'<p>The list is empty.</p>\n',
-        %w[{{ }}]]]
+        %w[%% %%]]]
 
     assert_equal expected, tokens
   end
 
   def test_raw_content_and_whitespace
     lexer = Mustache::Parser.new
-    tokens = lexer.compile("{{#list}}\t{{/list}}")
+    tokens = lexer.compile("%%#list%%\t%%/list%%")
 
     expected = [:multi,
       [:mustache,
@@ -71,7 +71,7 @@ EOF
         [:mustache, :fetch, ["list"]],
         [:multi, [:static, "\t"]],
         "\t",
-        %w[{{ }}]]]
+        %w[%% %%]]]
 
     assert_equal expected, tokens
   end

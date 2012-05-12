@@ -5,9 +5,9 @@ require 'helper'
 class MustacheTest < Test::Unit::TestCase
   def test_instance_render
     klass = Class.new(Mustache)
-    klass.template = "Hi {{thing}}!"
+    klass.template = "Hi %%thing%%!"
     assert_equal "Hi world!", klass.render(:thing => :world)
-    assert_equal "Nice.", klass.render("{{compliment}}.", :compliment => "Nice")
+    assert_equal "Nice.", klass.render("%%compliment%%.", :compliment => "Nice")
     assert_equal <<-end_simple, Simple.new.render(:name => "yo", :in_ca => false)
 Hello yo
 You have just won $10000!
@@ -49,7 +49,7 @@ end_complex
   end
 
   def test_single_line_sections
-    html = %(<p class="flash-notice" {{# no_flash }}style="display: none;"{{/ no_flash }}>)
+    html = %(<p class="flash-notice" %%# no_flash %%style="display: none;"%%/ no_flash %%>)
 
     instance = Mustache.new
     instance.template = html
@@ -60,7 +60,7 @@ end_complex
   def test_strings_as_sections_do_not_enumerate
     instance = Mustache.new
     instance[:contact] = "Call 1-888-FLOWERS\nAsk for Johnson."
-    instance.template = "{{#contact}}<div id='contact'>{{contact}}</div>{{/contact}}"
+    instance.template = "%%#contact%%<div id='contact'>%%contact%%</div>%%/contact%%"
 
     assert_equal "<div id='contact'>Call 1-888-FLOWERS\nAsk for Johnson.</div>",
                  instance.render
@@ -69,34 +69,34 @@ end_complex
   def test_sassy_single_line_sections
     instance = Mustache.new
     instance[:full_time] = true
-    instance.template = "\n {{#full_time}}full time{{/full_time}}\n"
+    instance.template = "\n %%#full_time%%full time%%/full_time%%\n"
 
     assert_equal "\n full time\n", instance.render
   end
 
   def test_sassier_single_line_sections
     instance = Mustache.new
-    instance.template = "\t{{#list}}\r\n\t{{/list}}"
+    instance.template = "\t%%#list%%\r\n\t%%/list%%"
 
     assert_equal "", instance.render
   end
 
   def test_padding_before_section
     instance = Mustache.new
-    instance.template = "\t{{#list}}a{{/list}}"
+    instance.template = "\t%%#list%%a%%/list%%"
 
     assert_equal "\taa", instance.render(:list => [1, 2])
   end
 
   def test_padding_before_section_on_eos
     instance = Mustache.new
-    instance.template = "{{#list}}\n\t{{/list}}"
+    instance.template = "%%#list%%\n\t%%/list%%"
 
     assert_equal "", instance.render(:list => [1, 2])
   end
 
   def test_two_line_sections
-    html = %(<p class="flash-notice" {{# no_flash }}style="display: none;"\n{{/ no_flash }}>)
+    html = %(<p class="flash-notice" %%# no_flash %%style="display: none;"\n%%/ no_flash %%>)
 
     instance = Mustache.new
     instance.template = html
@@ -107,9 +107,9 @@ end_complex
   def test_multi_line_sections_preserve_trailing_newline
     view = Mustache.new
     view.template = <<template
-{{#something}}
+%%#something%%
 yay
-{{/something}}
+%%/something%%
 Howday.
 template
 
@@ -121,7 +121,7 @@ rendered
   end
 
   def test_single_line_inverted_sections
-    html = %(<p class="flash-notice" {{^ flash }}style="display: none;"{{/ flash }}>)
+    html = %(<p class="flash-notice" %%^ flash %%style="display: none;"%%/ flash %%>)
 
     instance = Mustache.new
     instance.template = html
@@ -168,7 +168,7 @@ end_simple
 
   def test_fileless_templates
     view = Simple.new
-    view.template = 'Hi {{person}}!'
+    view.template = 'Hi %%person%%!'
     view[:person]  = 'mom'
 
     assert_equal 'Hi mom!', view.render
@@ -205,7 +205,7 @@ end_section
 
   def test_multi_linecomments
     view = Comments.new
-    view.template = "<h1>{{title}}{{! just something interesting... \n#or not... }}</h1>\n"
+    view.template = "<h1>%%title%%%%! just something interesting... \n#or not... %%</h1>\n"
     assert_equal "<h1>A Comedy of Errors</h1>\n", view.render
   end
 
@@ -219,7 +219,7 @@ end_section
 
   def test_unescaped_ampersand
     view = Mustache.new
-    view.template = "<h1>{{& title}}</h1>"
+    view.template = "<h1>%%& title%%</h1>"
     view[:title] = "Bear > Shark"
     assert_equal '<h1>Bear > Shark</h1>', view.render
   end
@@ -254,7 +254,7 @@ end_section
   end
 
   def test_render_with_params
-    assert_equal 'Hello World!', Mustache.render('Hello {{planet}}!', :planet => 'World')
+    assert_equal 'Hello World!', Mustache.render('Hello %%planet%%!', :planet => 'World')
   end
 
   def test_render_from_file
@@ -297,7 +297,7 @@ data
         raise "bummer"
       end
     end
-    instance.template = '{{#show}} <li>{{die}}</li> {{/show}} yay'
+    instance.template = '%%#show%% <li>%%die%%</li> %%/show%% yay'
 
     assert_equal " yay", instance.render
   end
@@ -305,7 +305,7 @@ data
   def test_reports_unclosed_sections
     instance = Mustache.new
     instance[:list] = [ :item => 1234 ]
-    instance.template = '{{#list}} <li>{{item}}</li> {{/gist}}'
+    instance.template = '%%#list%% <li>%%item%%</li> %%/gist%%'
 
     begin
       instance.render
@@ -318,7 +318,7 @@ data
   def test_unclosed_sections_reports_the_line_number
     instance = Mustache.new
     instance[:list] = [ :item => 1234 ]
-    instance.template = "hi\nmom\n{{#list}} <li>{{item}}</li> {{/gist}}"
+    instance.template = "hi\nmom\n%%#list%% <li>%%item%%</li> %%/gist%%"
 
     begin
       instance.render
@@ -331,7 +331,7 @@ data
   def test_enumerable_sections_accept_a_hash_as_a_context
     instance = Mustache.new
     instance[:list] = { :item => 1234 }
-    instance.template = '{{#list}} <li>{{item}}</li> {{/list}}'
+    instance.template = '%%#list%% <li>%%item%%</li> %%/list%%'
 
     assert_equal ' <li>1234</li> ', instance.render
   end
@@ -339,14 +339,14 @@ data
   def test_enumerable_sections_accept_a_string_keyed_hash_as_a_context
     instance = Mustache.new
     instance[:list] = { 'item' => 1234 }
-    instance.template = '{{#list}} <li>{{item}}</li> {{/list}}'
+    instance.template = '%%#list%% <li>%%item%%</li> %%/list%%'
 
     assert_equal ' <li>1234</li> ', instance.render
   end
 
   def test_not_found_in_context_renders_empty_string
     instance = Mustache.new
-    instance.template = '{{#list}} <li>{{item}}</li> {{/list}}'
+    instance.template = '%%#list%% <li>%%item%%</li> %%/list%%'
 
     assert_equal '', instance.render
   end
@@ -354,7 +354,7 @@ data
   def test_not_found_in_nested_context_renders_empty_string
     instance = Mustache.new
     instance[:list] = { :item => 1234 }
-    instance.template = '{{#list}} <li>{{prefix}}{{item}}</li> {{/list}}'
+    instance.template = '%%#list%% <li>%%prefix%%%%item%%</li> %%/list%%'
 
     assert_equal ' <li>1234</li> ', instance.render
   end
@@ -362,7 +362,7 @@ data
   def test_not_found_in_context_raises_when_asked_to
     instance = Mustache.new
     instance.raise_on_context_miss = true
-    instance.template = '{{#list}} <li>{{item}}</li> {{/list}}'
+    instance.template = '%%#list%% <li>%%item%%</li> %%/list%%'
 
     assert_raises Mustache::ContextMiss do
       instance.render
@@ -373,7 +373,7 @@ data
     klass = Class.new(Mustache)
 
     assert ! klass.compiled?
-    klass.template = 'Hi, {{person}}!'
+    klass.template = 'Hi, %%person%%!'
     assert klass.compiled?
   end
 
@@ -403,7 +403,7 @@ data
     instance = klass.new
 
     assert ! instance.compiled?
-    instance.template = 'Hi, {{person}}!'
+    instance.template = 'Hi, %%person%%!'
     assert instance.compiled?
   end
 
@@ -411,13 +411,13 @@ data
     view = Lambda.new
     view[:name] = 'Chris'
 
-    assert_equal "Hi Chris.\n\nHi {{name}}.", view.render.chomp
+    assert_equal "Hi Chris.\n\nHi %%name%%.", view.render.chomp
     assert_equal 1, view.calls
 
-    assert_equal "Hi Chris.\n\nHi {{name}}.", view.render.chomp
+    assert_equal "Hi Chris.\n\nHi %%name%%.", view.render.chomp
     assert_equal 1, view.calls
 
-    assert_equal "Hi Chris.\n\nHi {{name}}.", view.render.chomp
+    assert_equal "Hi Chris.\n\nHi %%name%%.", view.render.chomp
     assert_equal 1, view.calls
   end
 
@@ -428,12 +428,12 @@ data
       end
     end
 
-    str = kls.render("{{#unary_method}}test{{/unary_method}}")
+    str = kls.render("%%#unary_method%%test%%/unary_method%%")
     assert_equal "(test)", str
   end
 
   def test_lots_of_staches
-    template = "{{{{foo}}}}"
+    template = "%%%%foo%%%%"
 
     begin
       Mustache.render(template, :foo => "defunkt")
@@ -444,7 +444,7 @@ data
   end
 
   def test_liberal_tag_names
-    template = "{{first-name}} {{middle_name!}} {{lastName?}}"
+    template = "%%first-name%% %%middle_name!%% %%lastName?%%"
     hash = {
       'first-name' => 'chris',
       'middle_name!' => 'j',
@@ -456,13 +456,13 @@ data
 
   def test_nested_sections_same_names
     template = <<template
-{{#items}}
+%%#items%%
 start
-{{#items}}
-{{a}}
-{{/items}}
+%%#items%%
+%%a%%
+%%/items%%
 end
-{{/items}}
+%%/items%%
 template
 
     data = {
@@ -493,7 +493,7 @@ expected
   end
 
   def test_id_with_nested_context
-    html = %(<div>{{id}}</div>\n<div>{{# has_a? }}{{id}}{{/ has_a? }}</div>\n<div>{{# has_b? }}{{id}}{{/ has_b? }}</div>\n)
+    html = %(<div>%%id%%</div>\n<div>%%# has_a? %%%%id%%%%/ has_a? %%</div>\n<div>%%# has_b? %%%%id%%%%/ has_b? %%</div>\n)
 
     instance = Mustache.new
     instance.template = html
@@ -526,8 +526,8 @@ rendered
     view[:name] = 'indent'
     view[:text] = 'puts :indented!'
     view.template = <<template
-def {{name}}
-  {{text}}
+def %%name%%
+  %%text%%
 end
 template
 
@@ -542,7 +542,7 @@ template
     person = Struct.new(:name, :age)
     view = Mustache.new
     view[:person] = person.new('Marvin', 25)
-    view.template = '{{#person}}{{name}} is {{age}}{{/person}}'
+    view.template = '%%#person%%%%name%% is %%age%%%%/person%%'
     assert_equal 'Marvin is 25', view.render
   end
 
@@ -557,13 +557,13 @@ template
       end
     end
 
-    assert_equal 'pong', view.render("{{thing}}", :thing => "nothing")
-    assert_equal 'nothing', Mustache.render("{{thing}}", :thing => "nothing")
+    assert_equal 'pong', view.render("%%thing%%", :thing => "nothing")
+    assert_equal 'nothing', Mustache.render("%%thing%%", :thing => "nothing")
   end
 
   def test_implicit_iterator
     view = Mustache.new
-    view.template = "{{#people}}* {{.}}\n{{/people}}"
+    view.template = "%%#people%%* %%.%%\n%%/people%%"
     view[:people] = %w( Chris Mark Scott )
 
     assert_equal <<text, view.render
@@ -575,7 +575,7 @@ text
 
   def test_unescaped_implicit_iterator
     view = Mustache.new
-    view.template = "{{#people}}* {{{.}}}\n{{/people}}"
+    view.template = "%%#people%%* %%{.}%%\n%%/people%%"
     view[:people] = %w( Chris Mark Scott )
 
     assert_equal <<text, view.render
@@ -616,13 +616,13 @@ text
   end
     def test_array_of_arrays
     template = <<template
-{{#items}}
+%%#items%%
 start
-{{#map}}
-{{a}}
-{{/map}}
+%%#map%%
+%%a%%
+%%/map%%
 end
-{{/items}}
+%%/items%%
 template
 
     data = {
@@ -654,9 +654,9 @@ expected
       def test_indentation_again
     template = <<template
 SELECT
-  {{#cols}}
-    {{name}},
-  {{/cols}}
+  %%#cols%%
+    %%name%%,
+  %%/cols%%
 FROM
   DUMMY1
 template
