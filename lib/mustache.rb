@@ -1,76 +1,76 @@
-require 'mustache/template'
-require 'mustache/context'
-require 'mustache/settings'
+require 'porthole/template'
+require 'porthole/context'
+require 'porthole/settings'
 
-# Mustache is the base class from which your Mustache subclasses
+# Porthole is the base class from which your Porthole subclasses
 # should inherit (though it can be used on its own).
 #
-# The typical Mustache workflow is as follows:
+# The typical Porthole workflow is as follows:
 #
-# * Create a Mustache subclass: class Stats < Mustache
-# * Create a template: stats.mustache
+# * Create a Porthole subclass: class Stats < Porthole
+# * Create a template: stats.porthole
 # * Instantiate an instance: view = Stats.new
 # * Render that instance: view.render
 #
 # You can skip the instantiation by calling `Stats.render` directly.
 #
-# While Mustache will do its best to load and render a template for
+# While Porthole will do its best to load and render a template for
 # you, this process is completely customizable using a few options.
 #
 # All settings can be overriden at the class level.
 #
 # For example, going with the above example, we can use
 # `Stats.template_path = "/usr/local/templates"` to specify the path
-# Mustache uses to find templates.
+# Porthole uses to find templates.
 #
 # Here are the available options:
 #
 # * template_path
 #
-# The `template_path` setting determines the path Mustache uses when
+# The `template_path` setting determines the path Porthole uses when
 # looking for a template. By default it is "."
 # Setting it to /usr/local/templates, for example, means (given all
-# other settings are default) a Mustache subclass `Stats` will try to
-# load /usr/local/templates/stats.mustache
+# other settings are default) a Porthole subclass `Stats` will try to
+# load /usr/local/templates/stats.porthole
 #
 # * template_extension
 #
-# The `template_extension` is the extension Mustache uses when looking
-# for template files. By default it is "mustache"
+# The `template_extension` is the extension Porthole uses when looking
+# for template files. By default it is "porthole"
 #
 # * template_file
 #
-# You can tell Mustache exactly which template to use with this
+# You can tell Porthole exactly which template to use with this
 # setting. It can be a relative or absolute path.
 #
 # * template
 #
-# Sometimes you want Mustache to render a string, not a file. In those
+# Sometimes you want Porthole to render a string, not a file. In those
 # cases you may set the `template` setting. For example:
 #
-#   >> Mustache.render("Hello {{planet}}", :planet => "World!")
+#   >> Porthole.render("Hello {{planet}}", :planet => "World!")
 #   => "Hello World!"
 #
 # The `template` setting is also available on instances.
 #
-#   view = Mustache.new
+#   view = Porthole.new
 #   view.template = "Hi, {{person}}!"
 #   view[:person] = 'Mom'
 #   view.render # => Hi, mom!
 #
 # * view_namespace
 #
-# To make life easy on those developing Mustache plugins for web frameworks or
-# other libraries, Mustache will attempt to load view classes (i.e. Mustache
+# To make life easy on those developing Porthole plugins for web frameworks or
+# other libraries, Porthole will attempt to load view classes (i.e. Porthole
 # subclasses) using the `view_class` class method. The `view_namespace` tells
-# Mustache under which constant view classes live. By default it is `Object`.
+# Porthole under which constant view classes live. By default it is `Object`.
 #
 # * view_path
 #
-# Similar to `template_path`, the `view_path` option tells Mustache where to look
+# Similar to `template_path`, the `view_path` option tells Porthole where to look
 # for files containing view classes when using the `view_class` method.
 #
-class Mustache
+class Porthole
 
   #
   # Public API
@@ -131,7 +131,7 @@ class Mustache
 
   # Context accessors.
   #
-  # view = Mustache.new
+  # view = Porthole.new
   # view[:name] = "Jon"
   # view.template = "Hi, {{name}}!"
   # view.render # => "Hi, Jon!"
@@ -164,7 +164,7 @@ class Mustache
 
   # Given a name, attempts to read a file and return the contents as a
   # string. The file is not rendered, so it might contain
-  # {{mustaches}}.
+  # {{portholes}}.
   #
   # Call `render` if you need to process it.
   def self.partial(name)
@@ -180,7 +180,7 @@ class Mustache
 
   # Override this to provide custom escaping.
   #
-  # class PersonView < Mustache
+  # class PersonView < Porthole
   #   def escapeHTML(str)
   #     my_html_escape_method(str)
   #   end
@@ -199,8 +199,8 @@ class Mustache
   # When given a symbol or string representing a class, will try to produce an
   # appropriate view class.
   # e.g.
-  #   Mustache.view_namespace = Hurl::Views
-  #   Mustache.view_class(:Partial) # => Hurl::Views::Partial
+  #   Porthole.view_namespace = Hurl::Views
+  #   Porthole.view_class(:Partial) # => Hurl::Views::Partial
   def self.view_class(name)
     if name != classify(name.to_s)
       name = classify(name.to_s)
@@ -208,7 +208,7 @@ class Mustache
 
     # Emptiness begets emptiness.
     if name.to_s == ''
-      return Mustache
+      return Porthole
     end
 
     file_name = underscore(name)
@@ -218,16 +218,16 @@ class Mustache
       const
     elsif File.exists?(file = "#{view_path}/#{file_name}.rb")
       require "#{file}".chomp('.rb')
-      const_get!(name) || Mustache
+      const_get!(name) || Porthole
     else
-      Mustache
+      Porthole
     end
   end
 
   # Supercharged version of Module#const_get.
   #
   # Always searches under Object and can find constants by their full name,
-  #   e.g. Mustache::Views::Index
+  #   e.g. Porthole::Views::Index
   #
   # name - The full constant name to find.
   #
@@ -277,7 +277,7 @@ class Mustache
     end.join('/')
   end
 
-  # Turns a string into a Mustache::Template. If passed a Template,
+  # Turns a string into a Porthole::Template. If passed a Template,
   # returns it.
   def self.templateify(obj)
     if obj.is_a?(Template)

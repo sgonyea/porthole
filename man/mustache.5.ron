@@ -1,9 +1,9 @@
-mustache(5) -- Logic-less templates.
+porthole(5) -- Logic-less templates.
 ====================================
 
 ## SYNOPSIS
 
-A typical Mustache template:
+A typical Porthole template:
 
     Hello {{name}}
     You have just won {{value}} dollars!
@@ -29,19 +29,19 @@ Will produce the following:
 
 ## DESCRIPTION
 
-Mustache can be used for HTML, config files, source code -
+Porthole can be used for HTML, config files, source code -
 anything. It works by expanding tags in a template using values
 provided in a hash or object.
 
 We call it "logic-less" because there are no if statements, else
 clauses, or for loops. Instead there are only tags. Some tags are
 replaced with a value, some nothing, and others a series of
-values. This document explains the different types of Mustache tags.
+values. This document explains the different types of Porthole tags.
 
 
 ## TAG TYPES
 
-Tags are indicated by the double mustaches. `{{person}}` is a tag, as
+Tags are indicated by the double portholes. `{{person}}` is a tag, as
 is `{{#person}}`. In both examples, we'd refer to `person` as the key
 or tag key. Let's talk about the different types of tags.
 
@@ -53,13 +53,13 @@ template will try to find the `name` key in the current context. If
 there is no `name` key, nothing will be rendered.
 
 All variables are HTML escaped by default. If you want to return
-unescaped HTML, use the triple mustache: `{{{name}}}`.
+unescaped HTML, use the triple porthole: `{{{name}}}`.
 
 You can also use `&` to unescape a variable: `{{& name}}`. This may be
 useful when changing delimiters (see "Set Delimiter" below).
 
 By default a variable "miss" returns an empty string. This can usually
-be configured in your Mustache library. The Ruby version of Mustache
+be configured in your Porthole library. The Ruby version of Porthole
 supports raising an exception in this situation, for instance.
 
 Template:
@@ -255,11 +255,11 @@ this:
 
     <%= partial :next_more, :start => start, :size => size %>
 
-Mustache requires only this:
+Porthole requires only this:
 
     {{> next_more}}
 
-Why? Because the `next_more.mustache` file will inherit the `size` and
+Why? Because the `next_more.porthole` file will inherit the `size` and
 `start` methods from the calling context.
 
 In this way you may want to think of partials as includes, or template
@@ -267,13 +267,13 @@ expansion, even though it's not literally true.
 
 For example, this template and partial:
 
-    base.mustache:
+    base.porthole:
     <h2>Names</h2>
     {{#names}}
       {{> user}}
     {{/names}}
 
-    user.mustache:
+    user.porthole:
     <strong>{{name}}</strong>
 
 Can be thought of as a single, expanded template:
@@ -313,12 +313,12 @@ Custom delimiters may not contain whitespace or the equals sign.
 
 ## COPYRIGHT
 
-Mustache is Copyright (C) 2009 Chris Wanstrath
+Porthole is Copyright (C) 2009 Chris Wanstrath
 
 Original CTemplate by Google
 
 
 ## SEE ALSO
 
-mustache(1),
-<http://mustache.github.com/>
+porthole(1),
+<http://porthole.github.com/>

@@ -1,7 +1,7 @@
 $LOAD_PATH.unshift File.dirname(__FILE__) + '/../lib'
-require 'mustache'
+require 'porthole'
 
-class Recursive < Mustache
+class Recursive < Porthole
   self.path = File.dirname(__FILE__)
 
   def show

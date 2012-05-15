@@ -1,12 +1,12 @@
-if defined? Mustache
+if defined? Porthole
   require 'benchmark'
 
-  Mustache.class_eval do
+  Porthole.class_eval do
     alias_method :real_render, :render
 
     def render(*args, &block)
       out = ''
-      Rack::Bug::MustachePanel.times[self.class.name] = Benchmark.realtime do
+      Rack::Bug::PortholePanel.times[self.class.name] = Benchmark.realtime do
         out = real_render(*args, &block)
       end
       out
@@ -16,12 +16,12 @@ if defined? Mustache
     alias_method :to_text, :render
   end
 
-  Mustache::Context.class_eval do
+  Porthole::Context.class_eval do
     alias_method :real_get, :[]
 
     def [](name)
-      return real_get(name) if name == :yield || !@mustache.respond_to?(name)
-      Rack::Bug::MustachePanel.variables[name] = real_get(name)
+      return real_get(name) if name == :yield || !@porthole.respond_to?(name)
+      Rack::Bug::PortholePanel.variables[name] = real_get(name)
     end
   end
 end

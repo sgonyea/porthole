@@ -1,4 +1,4 @@
-require 'mustache'
+require 'porthole'
 require 'tmpdir'
 require 'yaml'
 require 'test/unit'
@@ -6,17 +6,17 @@ require 'test/unit'
 # Automatically process !code types into Proc objects
 YAML::add_builtin_type('code') { |_, val| eval(val['ruby']) }
 
-# A simple base class for Mustache specs.
-# Creates a partials directory, then points a (dynamic) subclass of Mustache at
+# A simple base class for Porthole specs.
+# Creates a partials directory, then points a (dynamic) subclass of Porthole at
 # that directory before each test; the partials directory is destroyed after
 # each test is run.
-class MustacheSpec < Test::Unit::TestCase
+class PortholeSpec < Test::Unit::TestCase
   def setup
     @partials = File.join(File.dirname(__FILE__), 'partials')
     Dir.mkdir(@partials)
 
-    @Mustache = Class.new(Mustache)
-    @Mustache.template_path = @partials
+    @Porthole = Class.new(Porthole)
+    @Porthole.template_path = @partials
   end
 
   def teardown
@@ -28,7 +28,7 @@ class MustacheSpec < Test::Unit::TestCase
   # directory for inclusion.
   def setup_partials(test)
     (test['partials'] || {}).each do |name, content|
-      File.open(File.join(@partials, "#{name}.mustache"), 'w') do |f|
+      File.open(File.join(@partials, "#{name}.porthole"), 'w') do |f|
         f.print(content)
       end
     end
@@ -36,8 +36,8 @@ class MustacheSpec < Test::Unit::TestCase
 
   # Asserts equality between the rendered template and the expected value,
   # printing additional context data on failure.
-  def assert_mustache_spec(test)
-    actual = @Mustache.render(test['template'], test['data'])
+  def assert_porthole_spec(test)
+    actual = @Porthole.render(test['template'], test['data'])
 
     assert_equal test['expected'], actual, "" <<
       "#{ test['desc'] }\n" <<
@@ -54,14 +54,14 @@ Dir[spec_files].each do |file|
   spec = YAML.load_file(file)
 
   klass_name = "Test" + File.basename(file, ".yml").sub(/~/, '').capitalize
-  instance_eval "class ::#{klass_name} < MustacheSpec; end"
+  instance_eval "class ::#{klass_name} < PortholeSpec; end"
   test_suite = Kernel.const_get(klass_name)
 
   test_suite.class_eval do
     spec['tests'].each do |test|
       define_method :"test - #{test['name']}" do
         setup_partials(test)
-        assert_mustache_spec(test)
+        assert_porthole_spec(test)
       end
     end
   end

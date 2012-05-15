@@ -3,12 +3,12 @@ projects:
 - name: resque
   url: http://github.com/defunkt/resque
   description: A Redis-backed Ruby library for queueing and working.
-- name: mustache
-  url: http://defunkt.github.com/mustache
+- name: porthole
+  url: http://defunkt.github.com/porthole
   description: Logic-less templates.
 - name: pystache
   url: http://github.com/defunkt/pystache
-  description: Mustache in Python
+  description: Porthole in Python
 - name: hub
   url: http://github.com/defunkt/hub
   description: hub introduces git to GitHub

@@ -47,7 +47,7 @@ unless ENV['NOHAML']
 end
 
 
-## mustache
+## porthole
 tpl = ComplexView.new
 tpl.template
 

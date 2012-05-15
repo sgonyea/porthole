@@ -1,16 +1,16 @@
 # Settings which can be configured for all view classes, a single
-# view class, or a single Mustache instance.
-class Mustache
+# view class, or a single Porthole instance.
+class Porthole
 
   #
   # Template Path
   #
 
-  # The template path informs your Mustache view where to look for its
+  # The template path informs your Porthole view where to look for its
   # corresponding template. By default it's the current directory (".")
   #
   # A class named Stat with a template_path of "app/templates" will look
-  # for "app/templates/stat.mustache"
+  # for "app/templates/stat.porthole"
 
   def self.template_path
     @template_path ||= inheritable_config_for :template_path, '.'
@@ -47,10 +47,10 @@ class Mustache
   # Template Extension
   #
 
-  # A Mustache template's default extension is 'mustache', but this can be changed.
+  # A Porthole template's default extension is 'porthole', but this can be changed.
 
   def self.template_extension
-    @template_extension ||= inheritable_config_for :template_extension, 'mustache'
+    @template_extension ||= inheritable_config_for :template_extension, 'porthole'
   end
 
   def self.template_extension=(template_extension)
@@ -72,14 +72,14 @@ class Mustache
   # Template Name
   #
 
-  # The template name is the Mustache template file without any
+  # The template name is the Porthole template file without any
   # extension or other information. Defaults to `class_name`.
   #
   # You may want to change this if your class is named Stat but you want
   # to re-use another template.
   #
   #   class Stat
-  #     self.template_name = "graphs" # use graphs.mustache
+  #     self.template_name = "graphs" # use graphs.porthole
   #   end
 
   def self.template_name
@@ -105,8 +105,8 @@ class Mustache
   # Template File
   #
 
-  # The template file is the absolute path of the file Mustache will
-  # use as its template. By default it's ./class_name.mustache
+  # The template file is the absolute path of the file Porthole will
+  # use as its template. By default it's ./class_name.porthole
 
   def self.template_file
     @template_file || "#{path}/#{template_name}.#{template_extension}"
@@ -117,8 +117,8 @@ class Mustache
     @template = nil
   end
 
-  # The template file is the absolute path of the file Mustache will
-  # use as its template. By default it's ./class_name.mustache
+  # The template file is the absolute path of the file Porthole will
+  # use as its template. By default it's ./class_name.porthole
   def template_file
     @template_file || "#{path}/#{template_name}.#{template_extension}"
   end
@@ -133,9 +133,9 @@ class Mustache
   # Template
   #
 
-  # The template is the actual string Mustache uses as its template.
+  # The template is the actual string Porthole uses as its template.
   # There is a bit of magic here: what we get back is actually a
-  # Mustache::Template object, but you can still safely use `template=`
+  # Porthole::Template object, but you can still safely use `template=`
   #  with a string.
 
   def self.template
@@ -171,7 +171,7 @@ class Mustache
   # or key in the current context? By default this is false to emulate ctemplate's
   # behavior, but it may be useful to enable when debugging or developing.
   #
-  # If set to true and there is a context miss, `Mustache::ContextMiss` will
+  # If set to true and there is a context miss, `Porthole::ContextMiss` will
   # be raised.
 
   def self.raise_on_context_miss?
@@ -182,7 +182,7 @@ class Mustache
     @raise_on_context_miss = boolean
   end
 
-  # Instance level version of `Mustache.raise_on_context_miss?`
+  # Instance level version of `Porthole.raise_on_context_miss?`
   def raise_on_context_miss?
     self.class.raise_on_context_miss? || @raise_on_context_miss
   end
@@ -196,7 +196,7 @@ class Mustache
   # View Namespace
   #
 
-  # The constant under which Mustache will look for views when autoloading.
+  # The constant under which Porthole will look for views when autoloading.
   # By default the view namespace is `Object`, but it might be nice to set
   # it to something like `Hurl::Views` if your app's main namespace is `Hurl`.
 
@@ -213,7 +213,7 @@ class Mustache
   # View Path
   #
 
-  # Mustache searches the view path for .rb files to require when asked to find a
+  # Porthole searches the view path for .rb files to require when asked to find a
   # view class. Defaults to "."
 
   def self.view_path

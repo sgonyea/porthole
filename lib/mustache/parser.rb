@@ -1,6 +1,6 @@
 require 'strscan'
 
-class Mustache
+class Porthole
   # The Parser is responsible for taking a string template and
   # converting it into an array of tokens and, really, expressions. It
   # raises SyntaxError if there is anything it doesn't understand and
@@ -14,14 +14,14 @@ class Mustache
   #
   #   [:multi,
   #     [:static, "Hi "],
-  #     [:mustache, :etag, "thing"],
+  #     [:porthole, :etag, "thing"],
   #     [:static, "!\n"]]
   #
   # You can see the array of tokens for any template with the
-  # mustache(1) command line tool:
+  # porthole(1) command line tool:
   #
-  #   $ mustache --tokens test.mustache
-  #   [:multi, [:static, "Hi "], [:mustache, :etag, "thing"], [:static, "!\n"]]
+  #   $ porthole --tokens test.porthole
+  #   [:multi, [:static, "Hi "], [:porthole, :etag, "thing"], [:static, "!\n"]]
   class Parser
     # A SyntaxError is raised when the Parser comes across unclosed
     # tags, sections, illegal content in tags, or anything of that
@@ -103,7 +103,7 @@ EOF
       @result
     end
 
-    # Find {{mustaches}} and add them to the @result array.
+    # Find {{portholes}} and add them to the @result array.
     def scan_tags
       # Scan until we hit an opening delimiter.
       start_of_line = @scanner.beginning_of_line?
@@ -139,19 +139,19 @@ EOF
       # We found {{ but we can't figure out what's going on inside.
       error "Illegal content in tag" if content.empty?
 
-      fetch = [:mustache, :fetch, content.split('.')]
+      fetch = [:porthole, :fetch, content.split('.')]
       prev = @result
 
       # Based on the sigil, do what needs to be done.
       case type
       when '#'
         block = [:multi]
-        @result << [:mustache, :section, fetch, block]
+        @result << [:porthole, :section, fetch, block]
         @sections << [content, position, @result]
         @result = block
       when '^'
         block = [:multi]
-        @result << [:mustache, :inverted_section, fetch, block]
+        @result << [:porthole, :inverted_section, fetch, block]
         @sections << [content, position, @result]
         @result = block
       when '/'
@@ -169,14 +169,14 @@ EOF
       when '='
         self.otag, self.ctag = content.split(' ', 2)
       when '>', '<'
-        @result << [:mustache, :partial, content, padding]
+        @result << [:porthole, :partial, content, padding]
       when '{', '&'
         # The closing } in unescaped tags is just a hack for
         # aesthetics.
         type = "}" if type == "{"
-        @result << [:mustache, :utag, fetch]
+        @result << [:porthole, :utag, fetch]
       else
-        @result << [:mustache, :etag, fetch]
+        @result << [:porthole, :etag, fetch]
       end
 
       # Skip whitespace and any balancing sigils after the content
@@ -207,7 +207,7 @@ EOF
       return unless @result == [:multi]
     end
 
-    # Try to find static text, e.g. raw HTML with no {{mustaches}}.
+    # Try to find static text, e.g. raw HTML with no {{portholes}}.
     def scan_text
       text = scan_until_exclusive(/(^[ \t]*)?#{Regexp.escape(otag)}/)
 

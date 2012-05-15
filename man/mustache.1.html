@@ -3,7 +3,7 @@
 <head>
   <meta http-equiv='content-type' value='text/html;charset=utf8'>
   <meta name='generator' value='Ronn/v0.7.3 (http://github.com/rtomayko/ronn/tree/0.7.3)'>
-  <title>mustache(1) - Mustache processor</title>
+  <title>porthole(1) - Porthole processor</title>
   <style type='text/css' media='all'>
   /* style: man */
   body#manpage {margin:0}
@@ -64,29 +64,29 @@
   </div>
 
   <ol class='man-decor man-head man head'>
-    <li class='tl'>mustache(1)</li>
-    <li class='tc'>Mustache Manual</li>
-    <li class='tr'>mustache(1)</li>
+    <li class='tl'>porthole(1)</li>
+    <li class='tc'>Porthole Manual</li>
+    <li class='tr'>porthole(1)</li>
   </ol>
 
   <h2 id="NAME">NAME</h2>
 <p class="man-name">
-  <code>mustache</code> - <span class="man-whatis">Mustache processor</span>
+  <code>porthole</code> - <span class="man-whatis">Porthole processor</span>
 </p>
 
 <h2 id="SYNOPSIS">SYNOPSIS</h2>
 
-<pre><code>mustache &lt;YAML> &lt;FILE>
-mustache --compile &lt;FILE>
-mustache --tokens &lt;FILE>
+<pre><code>porthole &lt;YAML> &lt;FILE>
+porthole --compile &lt;FILE>
+porthole --tokens &lt;FILE>
 </code></pre>
 
 <h2 id="DESCRIPTION">DESCRIPTION</h2>
 
-<p>Mustache is a logic-less templating system for HTML, config files,
+<p>Porthole is a logic-less templating system for HTML, config files,
 anything.</p>
 
-<p>The <code>mustache</code> command processes a Mustache template preceded by YAML
+<p>The <code>porthole</code> command processes a Porthole template preceded by YAML
 frontmatter from standard input and prints one or more documents to
 standard output.</p>
 
@@ -101,8 +101,8 @@ names: [ {name: chris}, {name: mark}, {name: scott} ]
 <p>If you are unfamiliar with YAML, it is a superset of JSON. Valid JSON
 should work fine.</p>
 
-<p>After the frontmatter should come any valid Mustache template. See
-<a href="mustache.5.ron.html" class="man-ref">mustache<span class="s">(5)</span></a> for an overview of Mustache templates.</p>
+<p>After the frontmatter should come any valid Porthole template. See
+<a href="porthole.5.ron.html" class="man-ref">porthole<span class="s">(5)</span></a> for an overview of Porthole templates.</p>
 
 <p>For example:</p>
 
@@ -118,12 +118,12 @@ should work fine.</p>
 names: [ {name: chris}, {name: mark}, {name: scott} ]
 ---
 
-$ cat template.mustache
+$ cat template.porthole
 {{#names}}
   Hi {{name}}!
 {{/names}}
 
-$ cat data.yml template.mustache | mustache
+$ cat data.yml template.porthole | porthole
 Hi chris!
 Hi mark!
 Hi scott!
@@ -143,10 +143,10 @@ name: mark
 name: scott
 ---
 
-$ cat template.mustache
+$ cat template.porthole
 Hi {{name}}!
 
-$ cat data.yml template.mustache | mustache
+$ cat data.yml template.porthole | porthole
 Hi chris!
 Hi mark!
 Hi scott!
@@ -154,16 +154,16 @@ Hi scott!
 
 <h2 id="OPTIONS">OPTIONS</h2>
 
-<p>By default <code>mustache</code> will try to render a Mustache template using the
+<p>By default <code>porthole</code> will try to render a Porthole template using the
 YAML frontmatter you provide. It can do a few other things, however.</p>
 
 <dl>
 <dt><code>-c</code>, <code>--compile</code></dt><dd><p>Print the compiled Ruby version of a given template. This is the
 code that is actually used when rendering a template into a
 string. Useful for debugging but only if you are familiar with
-Mustache's internals.</p></dd>
-<dt><code>-t</code>, <code>--tokens</code></dt><dd><p>Print the tokenized form of a given Mustache template. This can be
-used to understand how Mustache parses a template. The tokens are
+Porthole's internals.</p></dd>
+<dt><code>-t</code>, <code>--tokens</code></dt><dd><p>Print the tokenized form of a given Porthole template. This can be
+used to understand how Porthole parses a template. The tokens are
 handed to a generator which compiles them into a Ruby
 string. Syntax errors and confused tags, therefor, can probably be
 identified by examining the tokens produced.</p></dd>
@@ -174,15 +174,15 @@ identified by examining the tokens produced.</p></dd>
 
 <p>If you have RubyGems installed:</p>
 
-<pre><code>gem install mustache
+<pre><code>gem install porthole
 </code></pre>
 
 <h2 id="EXAMPLES">EXAMPLES</h2>
 
-<pre><code>$ mustache data.yml template.mustache
-$ cat data.yml | mustache - template.mustache
-$ mustache -c template.mustache
-$ cat &lt;&lt;data | ruby mustache - template.mustache
+<pre><code>$ porthole data.yml template.porthole
+$ cat data.yml | porthole - template.porthole
+$ porthole -c template.porthole
+$ cat &lt;&lt;data | ruby porthole - template.porthole
 ---
 name: Bob
 age: 30
@@ -192,20 +192,20 @@ data
 
 <h2 id="COPYRIGHT">COPYRIGHT</h2>
 
-<p>Mustache is Copyright (C) 2009 Chris Wanstrath</p>
+<p>Porthole is Copyright (C) 2009 Chris Wanstrath</p>
 
 <p>Original CTemplate by Google</p>
 
 <h2 id="SEE-ALSO">SEE ALSO</h2>
 
-<p><a href="mustache.5.ron.html" class="man-ref">mustache<span class="s">(5)</span></a>, <span class="man-ref">gem<span class="s">(1)</span></span>,
-<a href="http://mustache.github.com/" data-bare-link="true">http://mustache.github.com/</a></p>
+<p><a href="porthole.5.ron.html" class="man-ref">porthole<span class="s">(5)</span></a>, <span class="man-ref">gem<span class="s">(1)</span></span>,
+<a href="http://porthole.github.com/" data-bare-link="true">http://porthole.github.com/</a></p>
 
 
   <ol class='man-decor man-foot man foot'>
     <li class='tl'>DEFUNKT</li>
     <li class='tc'>August 2011</li>
-    <li class='tr'>mustache(1)</li>
+    <li class='tr'>porthole(1)</li>
   </ol>
 
   </div>

@@ -1,7 +1,7 @@
 $LOAD_PATH.unshift File.dirname(__FILE__) + '/../lib'
-require 'mustache'
+require 'porthole'
 
-class Passenger < Mustache
+class Passenger < Porthole
   self.path = File.dirname(__FILE__)
   self.template_extension = 'conf'
 

@@ -10,6 +10,6 @@ class Stache18n
   end
 end
 
-puts Mustache.render(<<END, Stache18n)
+puts Porthole.render(<<END, Stache18n)
 <title>{{t.github}} - {{t.social-coding}}</title>
 END

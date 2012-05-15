@@ -1,29 +1,29 @@
 require 'cgi'
 
-require 'mustache/parser'
-require 'mustache/generator'
+require 'porthole/parser'
+require 'porthole/generator'
 
-class Mustache
-  # A Template represents a Mustache template. It compiles and caches
+class Porthole
+  # A Template represents a Porthole template. It compiles and caches
   # a raw string template into something usable.
   #
-  # The idea is this: when handed a Mustache template, convert it into
-  # a Ruby string by transforming Mustache tags into interpolated
+  # The idea is this: when handed a Porthole template, convert it into
+  # a Ruby string by transforming Porthole tags into interpolated
   # Ruby.
   #
   # You shouldn't use this class directly, instead:
   #
-  # >> Mustache.render(template, hash)
+  # >> Porthole.render(template, hash)
   class Template
     attr_reader :source
 
-    # Expects a Mustache template as a string along with a template
+    # Expects a Porthole template as a string along with a template
     # path, which it uses to find partials.
     def initialize(source)
       @source = source
     end
 
-    # Renders the `@source` Mustache template using the given
+    # Renders the `@source` Porthole template using the given
     # `context`, which should be a simple hash keyed with symbols.
     #
     # The first time a template is rendered, this method is overriden
@@ -31,11 +31,11 @@ class Mustache
     # the compilation step and run the Ruby version of the template
     # directly.
     def render(context)
-      # Compile our Mustache template into a Ruby string
+      # Compile our Porthole template into a Ruby string
       compiled = "def render(ctx) #{compile} end"
 
       # Here we rewrite ourself with the interpolated Ruby version of
-      # our Mustache template so subsequent calls are very fast and
+      # our Porthole template so subsequent calls are very fast and
       # can skip the compilation stage.
       instance_eval(compiled, __FILE__, __LINE__ - 1)
 
@@ -43,7 +43,7 @@ class Mustache
       render(context)
     end
 
-    # Does the dirty work of transforming a Mustache template into an
+    # Does the dirty work of transforming a Porthole template into an
     # interpolation-friendly Ruby string.
     def compile(src = @source)
       Generator.new.compile(tokens(src))

@@ -3,27 +3,27 @@
 require 'yaml'
 require 'optparse'
 
-require 'mustache'
-require 'mustache/version'
+require 'porthole'
+require 'porthole/version'
 
-class Mustache
+class Porthole
   class CLI
     # Return a structure describing the options.
     def self.parse_options(args)
       opts = OptionParser.new do |opts|
-        opts.banner = "Usage: mustache [-c] [-t] [-r library] FILE ..."
+        opts.banner = "Usage: porthole [-c] [-t] [-r library] FILE ..."
 
         opts.separator " "
 
         opts.separator "Examples:"
-        opts.separator "  $ mustache data.yml template.mustache"
-        opts.separator "  $ cat data.yml | mustache - template.mustache"
-        opts.separator "  $ mustache -c template.mustache"
+        opts.separator "  $ porthole data.yml template.porthole"
+        opts.separator "  $ cat data.yml | porthole - template.porthole"
+        opts.separator "  $ porthole -c template.porthole"
 
         opts.separator " "
 
-        opts.separator "  See mustache(1) or " +
-          "http://mustache.github.com/mustache.1.html"
+        opts.separator "  See porthole(1) or " +
+          "http://porthole.github.com/porthole.1.html"
         opts.separator "  for more details."
 
         opts.separator " "
@@ -31,14 +31,14 @@ class Mustache
 
         opts.on("-c", "--compile FILE",
           "Print the compiled Ruby for a given template.") do |file|
-          puts Mustache::Template.new(File.read(file)).compile
+          puts Porthole::Template.new(File.read(file)).compile
           exit
         end
 
         opts.on("-t", "--tokens FILE",
           "Print the tokenized form of a given template.") do |file|
           require 'pp'
-          pp Mustache::Template.new(File.read(file)).tokens
+          pp Porthole::Template.new(File.read(file)).tokens
           exit
         end
 
@@ -49,7 +49,7 @@ class Mustache
         opts.separator "Common Options:"
 
         opts.on("-v", "--version", "Print the version") do |v|
-          puts "Mustache v#{Mustache::Version}"
+          puts "Porthole v#{Porthole::Version}"
           exit
         end
 
@@ -74,10 +74,10 @@ class Mustache
         template = doc.sub($1, '')
 
         YAML.each_document(yaml) do |data|
-          puts Mustache.render(template, data)
+          puts Porthole.render(template, data)
         end
       else
-        puts Mustache.render(doc)
+        puts Porthole.render(doc)
       end
     end
   end
@@ -87,8 +87,8 @@ end
 ARGV << '-h' if ARGV.empty? && $stdin.tty?
 
 # Process options
-Mustache::CLI.parse_options(ARGV) if $stdin.tty?
+Porthole::CLI.parse_options(ARGV) if $stdin.tty?
 
 # Still here - process ARGF
-Mustache::CLI.process_files(ARGF)
+Porthole::CLI.process_files(ARGF)
 

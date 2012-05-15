@@ -1,19 +1,19 @@
-mustache(1) -- Mustache processor
+porthole(1) -- Porthole processor
 =================================
 
 ## SYNOPSIS
 
-    mustache <YAML> <FILE>
-    mustache --compile <FILE>
-    mustache --tokens <FILE>
+    porthole <YAML> <FILE>
+    porthole --compile <FILE>
+    porthole --tokens <FILE>
 
 
 ## DESCRIPTION
 
-Mustache is a logic-less templating system for HTML, config files,
+Porthole is a logic-less templating system for HTML, config files,
 anything.
 
-The `mustache` command processes a Mustache template preceded by YAML
+The `porthole` command processes a Porthole template preceded by YAML
 frontmatter from standard input and prints one or more documents to
 standard output.
 
@@ -27,8 +27,8 @@ ending with another `---` on a single line, e.g.
 If you are unfamiliar with YAML, it is a superset of JSON. Valid JSON
 should work fine.
 
-After the frontmatter should come any valid Mustache template. See
-mustache(5) for an overview of Mustache templates.
+After the frontmatter should come any valid Porthole template. See
+porthole(5) for an overview of Porthole templates.
 
 For example:
 
@@ -43,12 +43,12 @@ Now let's combine them.
     names: [ {name: chris}, {name: mark}, {name: scott} ]
     ---
 
-    $ cat template.mustache
+    $ cat template.porthole
     {{#names}}
       Hi {{name}}!
     {{/names}}
 
-    $ cat data.yml template.mustache | mustache
+    $ cat data.yml template.porthole | porthole
     Hi chris!
     Hi mark!
     Hi scott!
@@ -67,28 +67,28 @@ For example:
     name: scott
     ---
 
-    $ cat template.mustache
+    $ cat template.porthole
     Hi {{name}}!
 
-    $ cat data.yml template.mustache | mustache
+    $ cat data.yml template.porthole | porthole
     Hi chris!
     Hi mark!
     Hi scott!
 
 ## OPTIONS
 
-By default `mustache` will try to render a Mustache template using the
+By default `porthole` will try to render a Porthole template using the
 YAML frontmatter you provide. It can do a few other things, however.
 
   * `-c`, `--compile`:
     Print the compiled Ruby version of a given template. This is the
     code that is actually used when rendering a template into a
     string. Useful for debugging but only if you are familiar with
-    Mustache's internals.
+    Porthole's internals.
 
   * `-t`, `--tokens`:
-    Print the tokenized form of a given Mustache template. This can be
-    used to understand how Mustache parses a template. The tokens are
+    Print the tokenized form of a given Porthole template. This can be
+    used to understand how Porthole parses a template. The tokens are
     handed to a generator which compiles them into a Ruby
     string. Syntax errors and confused tags, therefor, can probably be
     identified by examining the tokens produced.
@@ -98,15 +98,15 @@ YAML frontmatter you provide. It can do a few other things, however.
 
 If you have RubyGems installed:
 
-    gem install mustache
+    gem install porthole
 
 
 ## EXAMPLES
 
-    $ mustache data.yml template.mustache
-    $ cat data.yml | mustache - template.mustache
-    $ mustache -c template.mustache
-    $ cat <<data | ruby mustache - template.mustache
+    $ porthole data.yml template.porthole
+    $ cat data.yml | porthole - template.porthole
+    $ porthole -c template.porthole
+    $ cat <<data | ruby porthole - template.porthole
     ---
     name: Bob
     age: 30
@@ -116,12 +116,12 @@ If you have RubyGems installed:
 
 ## COPYRIGHT
 
-Mustache is Copyright (C) 2009 Chris Wanstrath
+Porthole is Copyright (C) 2009 Chris Wanstrath
 
 Original CTemplate by Google
 
 
 ## SEE ALSO
 
-mustache(5), gem(1),
-<http://mustache.github.com/>
+porthole(5), gem(1),
+<http://porthole.github.com/>

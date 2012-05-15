@@ -1,5 +1,5 @@
 $LOAD_PATH.unshift File.dirname(__FILE__) + '/../lib'
-require 'mustache'
+require 'porthole'
 
 module SimpleView
   def name
@@ -19,7 +19,7 @@ module SimpleView
   end
 end
 
-class PartialWithModule < Mustache
+class PartialWithModule < Porthole
   include SimpleView
   self.path = File.dirname(__FILE__)
 

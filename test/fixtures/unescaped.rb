@@ -1,7 +1,7 @@
 $LOAD_PATH.unshift File.dirname(__FILE__) + '/../lib'
-require 'mustache'
+require 'porthole'
 
-class Unescaped < Mustache
+class Unescaped < Porthole
   self.path = File.dirname(__FILE__)
 
   def title

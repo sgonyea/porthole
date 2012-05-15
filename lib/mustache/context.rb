@@ -1,50 +1,50 @@
-class Mustache
+class Porthole
   # A ContextMiss is raised whenever a tag's target can not be found
-  # in the current context if `Mustache#raise_on_context_miss?` is
+  # in the current context if `Porthole#raise_on_context_miss?` is
   # set to true.
   #
   # For example, if your View class does not respond to `music` but
   # your template contains a `{{music}}` tag this exception will be raised.
   #
-  # By default it is not raised. See Mustache.raise_on_context_miss.
+  # By default it is not raised. See Porthole.raise_on_context_miss.
   class ContextMiss < RuntimeError;  end
 
-  # A Context represents the context which a Mustache template is
-  # executed within. All Mustache tags reference keys in the Context.
+  # A Context represents the context which a Porthole template is
+  # executed within. All Porthole tags reference keys in the Context.
   class Context
-    # Expect to be passed an instance of `Mustache`.
-    def initialize(mustache)
-      @stack = [mustache]
+    # Expect to be passed an instance of `Porthole`.
+    def initialize(porthole)
+      @stack = [porthole]
     end
 
     # A {{>partial}} tag translates into a call to the context's
     # `partial` method, which would be this sucker right here.
     #
-    # If the Mustache view handling the rendering (e.g. the view
+    # If the Porthole view handling the rendering (e.g. the view
     # representing your profile page or some other template) responds
     # to `partial`, we call it and render the result.
     def partial(name, indentation = '')
-      # Look for the first Mustache in the stack.
-      mustache = mustache_in_stack
+      # Look for the first Porthole in the stack.
+      porthole = porthole_in_stack
 
       # Indent the partial template by the given indentation.
-      part = mustache.partial(name).to_s.gsub(/^/, indentation)
+      part = porthole.partial(name).to_s.gsub(/^/, indentation)
 
-      # Call the Mustache's `partial` method and render the result.
-      result = mustache.render(part, self)
+      # Call the Porthole's `partial` method and render the result.
+      result = porthole.render(part, self)
     end
 
-    # Find the first Mustache in the stack. If we're being rendered
-    # inside a Mustache object as a context, we'll use that one.
-    def mustache_in_stack
-      @stack.detect { |frame| frame.is_a?(Mustache) }
+    # Find the first Porthole in the stack. If we're being rendered
+    # inside a Porthole object as a context, we'll use that one.
+    def porthole_in_stack
+      @stack.detect { |frame| frame.is_a?(Porthole) }
     end
 
-    # Allows customization of how Mustache escapes things.
+    # Allows customization of how Porthole escapes things.
     #
     # Returns a String.
     def escapeHTML(str)
-      mustache_in_stack.escapeHTML(str)
+      porthole_in_stack.escapeHTML(str)
     end
 
     # Adds a new object to the context's internal stack.
@@ -102,7 +102,7 @@ class Mustache
         end
       end
 
-      if default == :__raise || mustache_in_stack.raise_on_context_miss?
+      if default == :__raise || porthole_in_stack.raise_on_context_miss?
         raise ContextMiss.new("Can't find #{name} in #{@stack.inspect}")
       else
         default

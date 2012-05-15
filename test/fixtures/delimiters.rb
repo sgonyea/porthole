@@ -1,7 +1,7 @@
 $LOAD_PATH.unshift File.dirname(__FILE__) + '/../lib'
-require 'mustache'
+require 'porthole'
 
-class Delimiters < Mustache
+class Delimiters < Porthole
   self.path = File.dirname(__FILE__)
 
   def start

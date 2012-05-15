@@ -1,20 +1,20 @@
-Mustache
+Porthole
 =========
 
-Inspired by [ctemplate][1] and [et][2], Mustache is a
+Inspired by [ctemplate][1] and [et][2], Porthole is a
 framework-agnostic way to render logic-free views.
 
 As ctemplates says, "It emphasizes separating logic from presentation:
 it is impossible to embed application logic in this template language."
 
 For a list of implementations (other than Ruby) and tips, see
-<http://mustache.github.com/>.
+<http://porthole.github.com/>.
 
 
 Overview
 --------
 
-Think of Mustache as a replacement for your views. Instead of views
+Think of Porthole as a replacement for your views. Instead of views
 consisting of ERB or HAML with random helpers and arbitrary logic,
 your views are broken into two parts: a Ruby class and an HTML
 template.
@@ -44,14 +44,14 @@ Usage
 
 Quick example:
 
-    >> require 'mustache'
+    >> require 'porthole'
     => true
-    >> Mustache.render("Hello {{planet}}", :planet => "World!")
+    >> Porthole.render("Hello {{planet}}", :planet => "World!")
     => "Hello World!"
 
 We've got an `examples` folder but here's the canonical one:
 
-    class Simple < Mustache
+    class Simple < Porthole
       def name
         "Chris"
       end
@@ -97,17 +97,17 @@ Simple.
 Tag Types
 ---------
 
-For a language-agnostic overview of Mustache's template syntax, see
-the `mustache(5)` manpage or
-<http://mustache.github.com/mustache.5.html>.
+For a language-agnostic overview of Porthole's template syntax, see
+the `porthole(5)` manpage or
+<http://porthole.github.com/porthole.5.html>.
 
 
 Escaping
 --------
 
-Mustache does escape all values when using the standard double
-Mustache syntax. Characters which will be escaped: `& \ " < >`. To
-disable escaping, simply use triple mustaches like
+Porthole does escape all values when using the standard double
+Porthole syntax. Characters which will be escaped: `& \ " < >`. To
+disable escaping, simply use triple portholes like
 `{{{unescaped_variable}}}`.
 
 Example: Using `{{variable}}` inside a template for `5 > 2` will
@@ -119,10 +119,10 @@ Dict-Style Views
 ----------------
 
 ctemplate and friends want you to hand a dictionary to the template
-processor. Mustache supports a similar concept. Feel free to mix the
+processor. Porthole supports a similar concept. Feel free to mix the
 class-based and this more procedural style at your leisure.
 
-Given this template (winner.mustache):
+Given this template (winner.porthole):
 
     Hello {{name}}
     You have just won {{value}} bucks!
@@ -154,29 +154,29 @@ A word on templates. By default, a view will try to find its template
 on disk by searching for an HTML file in the current directory that
 follows the classic Ruby naming convention.
 
-    TemplatePartial => ./template_partial.mustache
+    TemplatePartial => ./template_partial.porthole
 
-You can set the search path using `Mustache.template_path`. It can be set on a
+You can set the search path using `Porthole.template_path`. It can be set on a
 class by class basis:
 
-    class Simple < Mustache
+    class Simple < Porthole
       self.template_path = File.dirname(__FILE__)
       ... etc ...
     end
 
-Now `Simple` will look for `simple.mustache` in the directory it resides
+Now `Simple` will look for `simple.porthole` in the directory it resides
 in, no matter the cwd.
 
 If you want to just change what template is used you can set
-`Mustache.template_file` directly:
+`Porthole.template_file` directly:
 
-    Simple.template_file = './blah.mustache'
+    Simple.template_file = './blah.porthole'
 
-Mustache also allows you to define the extension it'll use.
+Porthole also allows you to define the extension it'll use.
 
     Simple.template_extension = 'xml'
 
-Given all other defaults, the above line will cause Mustache to look
+Given all other defaults, the above line will cause Porthole to look
 for './blah.xml'
 
 Feel free to set the template directly:
@@ -193,10 +193,10 @@ Whatever works.
 Views
 -----
 
-Mustache supports a bit of magic when it comes to views. If you're
+Porthole supports a bit of magic when it comes to views. If you're
 authoring a plugin or extension for a web framework (Sinatra, Rails,
 etc), check out the `view_namespace` and `view_path` settings on the
-`Mustache` class. They will surely provide needed assistance.
+`Porthole` class. They will surely provide needed assistance.
 
 
 Helpers
@@ -224,7 +224,7 @@ This is just Ruby, after all.
 
 Then just include it:
 
-    class Simple < Mustache
+    class Simple < Porthole
       include ViewHelpers
 
       def name
@@ -251,11 +251,11 @@ Then just include it:
 Great, but what about that `@ssl` ivar in `gravatar_host`? There are
 many ways we can go about setting it.
 
-Here's on example which illustrates a key feature of Mustache: you
+Here's on example which illustrates a key feature of Porthole: you
 are free to use the `initialize` method just as you would in any
 normal class.
 
-    class Simple < Mustache
+    class Simple < Porthole
       include ViewHelpers
 
       def initialize(ssl = false)
@@ -281,35 +281,35 @@ Finally, our template might look like this:
 Sinatra
 -------
 
-Mustache ships with Sinatra integration. Please see
-`lib/mustache/sinatra.rb` or
-<http://github.com/defunkt/mustache/blob/master/lib/mustache/sinatra.rb>
+Porthole ships with Sinatra integration. Please see
+`lib/porthole/sinatra.rb` or
+<http://github.com/defunkt/porthole/blob/master/lib/porthole/sinatra.rb>
 for complete documentation.
 
 An example Sinatra application is also provided:
-<http://github.com/defunkt/mustache-sinatra-example>
+<http://github.com/defunkt/porthole-sinatra-example>
 
-If you are upgrading to Sinatra 1.0 and Mustache 0.9.0+ from Mustache
+If you are upgrading to Sinatra 1.0 and Porthole 0.9.0+ from Porthole
 0.7.0 or lower, the settings have changed. But not that much.
 
 See [this diff](http://gist.github.com/345490) for what you need to
 do. Basically, things are named properly now and all should be
-contained in a hash set using `set :mustache, hash`.
+contained in a hash set using `set :porthole, hash`.
 
 
 [Rack::Bug][4]
 --------------
 
-Mustache also ships with a `Rack::Bug` panel. In your `config.ru` add
+Porthole also ships with a `Rack::Bug` panel. In your `config.ru` add
 the following code:
 
-    require 'rack/bug/panels/mustache_panel'
-    use Rack::Bug::MustachePanel
+    require 'rack/bug/panels/porthole_panel'
+    use Rack::Bug::PortholePanel
 
 Using Rails? Add this to your initializer or environment file:
 
-    require 'rack/bug/panels/mustache_panel'
-    config.middleware.use "Rack::Bug::MustachePanel"
+    require 'rack/bug/panels/porthole_panel'
+    config.middleware.use "Rack::Bug::PortholePanel"
 
 [![Rack::Bug](http://img.skitch.com/20091027-xyf4h1yxnefpp7usyddrcmc7dn.png)][5]
 
@@ -317,7 +317,7 @@ Using Rails? Add this to your initializer or environment file:
 Vim
 ---
 
-Thanks to [Juvenn Woo](http://github.com/juvenn) for mustache.vim. It
+Thanks to [Juvenn Woo](http://github.com/juvenn) for porthole.vim. It
 is included under the contrib/ directory.
 
 See <http://gist.github.com/323622> for installation instructions.
@@ -326,13 +326,13 @@ See <http://gist.github.com/323622> for installation instructions.
 Emacs
 -----
 
-mustache-mode.el is available at https://github.com/mustache/emacs
+porthole-mode.el is available at https://github.com/porthole/emacs
 
 
 TextMate
 --------
 
-[Mustache.tmbundle](http://github.com/defunkt/Mustache.tmbundle)
+[Porthole.tmbundle](http://github.com/defunkt/Porthole.tmbundle)
 
 See <http://gist.github.com/323624> for installation instructions.
 
@@ -340,8 +340,8 @@ See <http://gist.github.com/323624> for installation instructions.
 Command Line
 ------------
 
-See `mustache(1)` man page or
-<http://mustache.github.com/mustache.1.html>
+See `porthole(1)` man page or
+<http://porthole.github.com/porthole.1.html>
 for command line docs.
 
 
@@ -350,17 +350,17 @@ Installation
 
 ### [RubyGems](http://rubygems.org/)
 
-    $ gem install mustache
+    $ gem install porthole
 
 
 Acknowledgements
 ----------------
 
 Thanks to [Tom Preston-Werner](http://github.com/mojombo) for showing
-me ctemplate and [Leah Culver](http://github.com/leah) for the name "Mustache."
+me ctemplate and [Leah Culver](http://github.com/leah) for the name "Porthole."
 
 Special thanks to [Magnus Holm](http://judofyr.net/) for all his
-awesome work on Mustache's parser.
+awesome work on Porthole's parser.
 
 
 Contributing
@@ -368,7 +368,7 @@ Contributing
 
 Once you've made your great commits:
 
-1. [Fork][fk] Mustache
+1. [Fork][fk] Porthole
 2. Create a topic branch - `git checkout -b my_branch`
 3. Push to your branch - `git push origin my_branch`
 4. Create an [Issue][is] with a link to your branch
@@ -381,7 +381,7 @@ on coding standards, new features, etc.
 Mailing List
 ------------
 
-To join the list simply send an email to <mustache@librelist.com>. This
+To join the list simply send an email to <porthole@librelist.com>. This
 will subscribe you and send you information about your subscription,
 including unsubscribe information.
 
@@ -391,11 +391,11 @@ The archive can be found at <http://librelist.com/browser/>.
 Meta
 ----
 
-* Code: `git clone git://github.com/defunkt/mustache.git`
-* Home: <http://mustache.github.com>
-* Bugs: <http://github.com/defunkt/mustache/issues>
-* List: <mustache@librelist.com>
-* Gems: <http://rubygems.org/gems/mustache>
+* Code: `git clone git://github.com/defunkt/porthole.git`
+* Home: <http://porthole.github.com>
+* Bugs: <http://github.com/defunkt/porthole/issues>
+* List: <porthole@librelist.com>
+* Gems: <http://rubygems.org/gems/porthole>
 
 You can also find us in `#{` on irc.freenode.net.
 
@@ -406,4 +406,4 @@ You can also find us in `#{` on irc.freenode.net.
 [5]: http://img.skitch.com/20091027-n8pxwwx8r61tc318a15q1n6m14.png
 [cb]: http://wiki.github.com/defunkt/resque/contributing
 [fk]: http://help.github.com/forking/
-[is]: http://github.com/defunkt/mustache/issues
+[is]: http://github.com/defunkt/porthole/issues

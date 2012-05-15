@@ -3,7 +3,7 @@ require 'helper'
 
 class ParserTest < Test::Unit::TestCase
   def test_parser
-    lexer = Mustache::Parser.new
+    lexer = Porthole::Parser.new
     tokens = lexer.compile(<<-EOF)
 <h1>%%header%%</h1>
 %%#items%%
@@ -22,38 +22,38 @@ EOF
 
     expected = [:multi,
       [:static, "<h1>"],
-      [:mustache, :etag, [:mustache, :fetch, ["header"]]],
+      [:porthole, :etag, [:porthole, :fetch, ["header"]]],
       [:static, "</h1>\n"],
-      [:mustache,
+      [:porthole,
         :section,
-        [:mustache, :fetch, ["items"]],
+        [:porthole, :fetch, ["items"]],
         [:multi,
-          [:mustache,
+          [:porthole,
             :section,
-            [:mustache, :fetch, ["first"]],
+            [:porthole, :fetch, ["first"]],
             [:multi,
               [:static, "  <li><strong>"],
-              [:mustache, :etag, [:mustache, :fetch, ["name"]]],
+              [:porthole, :etag, [:porthole, :fetch, ["name"]]],
               [:static, "</strong></li>\n"]],
             %Q'  <li><strong>%%name%%</strong></li>\n',
             %w[%% %%]],
-          [:mustache,
+          [:porthole,
             :section,
-            [:mustache, :fetch, ["link"]],
+            [:porthole, :fetch, ["link"]],
             [:multi,
               [:static, "  <li><a href=\""],
-              [:mustache, :etag, [:mustache, :fetch, ["url"]]],
+              [:porthole, :etag, [:porthole, :fetch, ["url"]]],
               [:static, "\">"],
-              [:mustache, :etag, [:mustache, :fetch, ["name"]]],
+              [:porthole, :etag, [:porthole, :fetch, ["name"]]],
               [:static, "</a></li>\n"]],
             %Q'  <li><a href="%%url%%">%%name%%</a></li>\n',
             %w[%% %%]]],
         %Q'%%#first%%\n  <li><strong>%%name%%</strong></li>\n%%/first%%\n%%#link%%\n  <li><a href="%%url%%">%%name%%</a></li>\n%%/link%%\n',
         %w[%% %%]],
       [:static, "\n"],
-      [:mustache,
+      [:porthole,
         :section,
-        [:mustache, :fetch, ["empty"]],
+        [:porthole, :fetch, ["empty"]],
         [:multi, [:static, "<p>The list is empty.</p>\n"]],
         %Q'<p>The list is empty.</p>\n',
         %w[%% %%]]]
@@ -62,13 +62,13 @@ EOF
   end
 
   def test_raw_content_and_whitespace
-    lexer = Mustache::Parser.new
+    lexer = Porthole::Parser.new
     tokens = lexer.compile("%%#list%%\t%%/list%%")
 
     expected = [:multi,
-      [:mustache,
+      [:porthole,
         :section,
-        [:mustache, :fetch, ["list"]],
+        [:porthole, :fetch, ["list"]],
         [:multi, [:static, "\t"]],
         "\t",
         %w[%% %%]]]

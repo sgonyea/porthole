@@ -1,5 +1,5 @@
-class Mustache
-  # The Generator is in charge of taking an array of Mustache tokens,
+class Porthole
+  # The Generator is in charge of taking an array of Porthole tokens,
   # usually assembled by the Parser, and generating an interpolatable
   # Ruby string. This string is considered the "compiled" template
   # because at that point we're relying on Ruby to do the parsing and
@@ -13,18 +13,18 @@ class Mustache
   #
   #   [:multi,
   #     [:static, "Hi "],
-  #     [:mustache, :etag, "thing"],
+  #     [:porthole, :etag, "thing"],
   #     [:static, "!\n"]]
   #
   # Now let's hand that to the Generator:
   #
-  # >> puts Mustache::Generator.new.compile(tokens)
+  # >> puts Porthole::Generator.new.compile(tokens)
   # "Hi #{CGI.escapeHTML(ctx[:thing].to_s)}!\n"
   #
   # You can see the generated Ruby string for any template with the
-  # mustache(1) command line tool:
+  # porthole(1) command line tool:
   #
-  #   $ mustache --compile test.mustache
+  #   $ porthole --compile test.porthole
   #   "Hi #{CGI.escapeHTML(ctx[:thing].to_s)}!\n"
   class Generator
     # Options are unused for now but may become useful in the future.
@@ -42,13 +42,13 @@ class Mustache
     # with:
     #
     #   :multi
-    #     Mixed bag of :static, :mustache, and whatever.
+    #     Mixed bag of :static, :porthole, and whatever.
     #
     #   :static
-    #     Normal HTML, the stuff outside of {{mustaches}}.
+    #     Normal HTML, the stuff outside of {{portholes}}.
     #
-    #   :mustache
-    #     Any Mustache tag, from sections to partials.
+    #   :porthole
+    #     Any Porthole tag, from sections to partials.
     #
     # To give you an idea of what you'll be dealing with take this
     # template:
@@ -64,16 +64,16 @@ class Mustache
     #
     #   [:multi,
     #    [:static, "Hello "],
-    #    [:mustache, :etag, "name"],
+    #    [:porthole, :etag, "name"],
     #    [:static, "\nYou have just won $"],
-    #    [:mustache, :etag, "value"],
+    #    [:porthole, :etag, "value"],
     #    [:static, "!\n"],
-    #    [:mustache,
+    #    [:porthole,
     #     :section,
     #     "in_ca",
     #     [:multi,
     #      [:static, "Well, $"],
-    #      [:mustache, :etag, "taxed_value"],
+    #      [:porthole, :etag, "taxed_value"],
     #      [:static, ", after taxes.\n"]]]]
     def compile!(exp)
       case exp.first
@@ -81,7 +81,7 @@ class Mustache
         exp[1..-1].map { |e| compile!(e) }.join
       when :static
         str(exp[1])
-      when :mustache
+      when :porthole
         send("on_#{exp[1]}", *exp[2..-1])
       else
         raise "Unhandled exp: #{exp.first}"
@@ -102,7 +102,7 @@ class Mustache
         if v == true
           #{code}
         elsif v.is_a?(Proc)
-          t = Mustache::Template.new(v.call(#{raw.inspect}).to_s)
+          t = Porthole::Template.new(v.call(#{raw.inspect}).to_s)
           def t.tokens(src=@source)
             p = Parser.new
             p.otag, p.ctag = #{delims.inspect}
@@ -148,7 +148,7 @@ class Mustache
       ev(<<-compiled)
         v = #{compile!(name)}
         if v.is_a?(Proc)
-          v = Mustache::Template.new(v.call.to_s).render(ctx.dup)
+          v = Porthole::Template.new(v.call.to_s).render(ctx.dup)
         end
         v.to_s
       compiled
@@ -159,7 +159,7 @@ class Mustache
       ev(<<-compiled)
         v = #{compile!(name)}
         if v.is_a?(Proc)
-          v = Mustache::Template.new(v.call.to_s).render(ctx.dup)
+          v = Porthole::Template.new(v.call.to_s).render(ctx.dup)
         end
         ctx.escapeHTML(v.to_s)
       compiled

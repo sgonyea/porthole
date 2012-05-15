@@ -1,8 +1,8 @@
 $LOAD_PATH.unshift File.dirname(__FILE__) + '/../lib'
-require 'mustache'
+require 'porthole'
 
 module TestViews
-  class Namespaced < Mustache
+  class Namespaced < Porthole
     self.path = File.dirname(__FILE__)
 
     def title
@@ -10,7 +10,7 @@ module TestViews
     end
   end
 
-  class NamespacedWithPartial < Mustache
+  class NamespacedWithPartial < Porthole
     self.path = File.dirname(__FILE__)
     self.template = "My opinion: %%>inner_partial%%"
 

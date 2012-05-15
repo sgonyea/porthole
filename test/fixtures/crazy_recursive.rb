@@ -1,7 +1,7 @@
 $LOAD_PATH.unshift File.dirname(__FILE__) + '/../lib'
-require 'mustache'
+require 'porthole'
 
-class CrazyRecursive < Mustache
+class CrazyRecursive < Porthole
   self.path = File.dirname(__FILE__)
 
   def top_nodes

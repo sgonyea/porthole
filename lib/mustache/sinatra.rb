@@ -1,39 +1,39 @@
 require 'sinatra/base'
-require 'mustache'
+require 'porthole'
 
-class Mustache
-  # Support for Mustache in your Sinatra app.
+class Porthole
+  # Support for Porthole in your Sinatra app.
   #
-  #   require 'mustache/sinatra'
+  #   require 'porthole/sinatra'
   #
   #   class Hurl < Sinatra::Base
-  #     register Mustache::Sinatra
+  #     register Porthole::Sinatra
   #
-  #     set :mustache, {
-  #       # Should be the path to your .mustache template files.
-  #       :templates => "path/to/mustache/templates",
+  #     set :porthole, {
+  #       # Should be the path to your .porthole template files.
+  #       :templates => "path/to/porthole/templates",
   #
-  #       # Should be the path to your .rb Mustache view files.
-  #       :views => "path/to/mustache/views",
+  #       # Should be the path to your .rb Porthole view files.
+  #       :views => "path/to/porthole/views",
   #
-  #       # This tells Mustache where to look for the Views module,
+  #       # This tells Porthole where to look for the Views module,
   #       # under which your View classes should live. By default it's
   #       # the class of your app - in this case `Hurl`. That is, for an :index
-  #       # view Mustache will expect Hurl::Views::Index by default.
+  #       # view Porthole will expect Hurl::Views::Index by default.
   #       # If our Sinatra::Base subclass was instead Hurl::App,
   #       # we'd want to do `set :namespace, Hurl::App`
   #       :namespace => Hurl
   #     }
   #
   #     get '/stats' do
-  #       mustache :stats
+  #       porthole :stats
   #     end
   #   end
   #
-  # As noted above, Mustache will look for `Hurl::Views::Index` when
-  # `mustache :index` is called.
+  # As noted above, Porthole will look for `Hurl::Views::Index` when
+  # `porthole :index` is called.
   #
-  # If no `Views::Stats` class exists Mustache will render the template
+  # If no `Views::Stats` class exists Porthole will render the template
   # file directly.
   #
   # You can indeed use layouts with this library. Where you'd normally
@@ -42,25 +42,25 @@ class Mustache
   #
   # If you don't want the Sinatra extension to look up your view class,
   # maybe because you've already loaded it or you're pulling it in from
-  # a gem, you can hand the `mustache` helper a Mustache subclass directly:
+  # a gem, you can hand the `porthole` helper a Porthole subclass directly:
   #
-  #   # Assuming `class Omnigollum::Login < Mustache`
+  #   # Assuming `class Omnigollum::Login < Porthole`
   #   get '/login' do
   #     @title = "Log In"
   #     require 'lib/omnigollum/views/login'
-  #     mustache Omnigollum::Login
+  #     porthole Omnigollum::Login
   #   end
   #
   module Sinatra
     module Helpers
       # Call this in your Sinatra routes.
-      def mustache(template, options={}, locals={})
+      def porthole(template, options={}, locals={})
         # Locals can be passed as options under the :locals key.
         locals.update(options.delete(:locals) || {})
 
         # Grab any user-defined settings.
-        if settings.respond_to?(:mustache)
-          options = settings.send(:mustache).merge(options)
+        if settings.respond_to?(:porthole)
+          options = settings.send(:porthole).merge(options)
         end
 
         # If they aren't explicitly disabling layouts, try to find
@@ -73,7 +73,7 @@ class Mustache
           layout_name = :layout if layout_name == true || !layout_name
 
           # If they passed a layout name use that.
-          layout = mustache_class(layout_name, options)
+          layout = porthole_class(layout_name, options)
 
           # If it's just an anonymous subclass then don't bother, otherwise
           # give us a layout instance.
@@ -84,16 +84,16 @@ class Mustache
           end
         end
 
-        # If instead of a symbol they gave us a Mustache class,
+        # If instead of a symbol they gave us a Porthole class,
         # use that for rendering.
-        klass = template if template.is_a?(Class) && template < Mustache
+        klass = template if template.is_a?(Class) && template < Porthole
 
         # Find and cache the view class we want if we don't have
         # one yet. This ensures the compiled template is cached,
         # too - no looking up and compiling templates on each page
         # load.
         if klass.nil?
-          klass = mustache_class(template, options)
+          klass = porthole_class(template, options)
         end
 
         # Does the view subclass the layout? If so we'll use the
@@ -125,15 +125,15 @@ class Mustache
       end
 
       # Returns a View class for a given template name.
-      def mustache_class(template, options = {})
-        @template_cache.fetch(:mustache, template) do
-          compile_mustache(template, options)
+      def porthole_class(template, options = {})
+        @template_cache.fetch(:porthole, template) do
+          compile_porthole(template, options)
         end
       end
 
       # Given a view name and settings, finds and prepares an
       # appropriate view class for this view.
-      def compile_mustache(view, options = {})
+      def compile_porthole(view, options = {})
         options[:templates] ||= settings.views if settings.respond_to?(:views)
         options[:namespace] ||= self.class
 
@@ -141,7 +141,7 @@ class Mustache
           options[:namespace] = options[:namespace].const_get(:Views)
         end
 
-        factory = Class.new(Mustache) do
+        factory = Class.new(Porthole) do
           self.view_namespace = options[:namespace]
           self.view_path      = options[:views]
         end
@@ -160,14 +160,14 @@ class Mustache
 
         # If there is no view class, issue a warning and use the one
         # we just generated to cache the compiled template.
-        if klass == Mustache
+        if klass == Porthole
           warn "No view class found for #{view} in #{factory.view_path}"
           klass = factory
 
           # If this is a generic view class make sure we set the
           # template name as it was given. That is, an anonymous
-          # subclass of Mustache won't know how to find the
-          # "index.mustache" template unless we tell it to.
+          # subclass of Porthole won't know how to find the
+          # "index.porthole" template unless we tell it to.
           klass.template_name = view.to_s
         elsif ext
           # We got an ext (like "atom"), so look for an "Atom" class
@@ -195,11 +195,11 @@ class Mustache
       end
     end
 
-    # Called when you `register Mustache::Sinatra` in your Sinatra app.
+    # Called when you `register Porthole::Sinatra` in your Sinatra app.
     def self.registered(app)
-      app.helpers Mustache::Sinatra::Helpers
+      app.helpers Porthole::Sinatra::Helpers
     end
   end
 end
 
-Sinatra.register Mustache::Sinatra
+Sinatra.register Porthole::Sinatra

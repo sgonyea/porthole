@@ -1,7 +1,7 @@
 $LOAD_PATH.unshift File.dirname(__FILE__) + '/../lib'
-require 'mustache'
+require 'porthole'
 
-class DoubleSection < Mustache
+class DoubleSection < Porthole
   self.path = File.dirname(__FILE__)
 
   def t

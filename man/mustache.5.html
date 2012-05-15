@@ -3,7 +3,7 @@
 <head>
   <meta http-equiv='content-type' value='text/html;charset=utf8'>
   <meta name='generator' value='Ronn/v0.7.3 (http://github.com/rtomayko/ronn/tree/0.7.3)'>
-  <title>mustache(5) - Logic-less templates.</title>
+  <title>porthole(5) - Logic-less templates.</title>
   <style type='text/css' media='all'>
   /* style: man */
   body#manpage {margin:0}
@@ -62,19 +62,19 @@
   </div>
 
   <ol class='man-decor man-head man head'>
-    <li class='tl'>mustache(5)</li>
-    <li class='tc'>Mustache Manual</li>
-    <li class='tr'>mustache(5)</li>
+    <li class='tl'>porthole(5)</li>
+    <li class='tc'>Porthole Manual</li>
+    <li class='tr'>porthole(5)</li>
   </ol>
 
   <h2 id="NAME">NAME</h2>
 <p class="man-name">
-  <code>mustache</code> - <span class="man-whatis">Logic-less templates.</span>
+  <code>porthole</code> - <span class="man-whatis">Logic-less templates.</span>
 </p>
 
 <h2 id="SYNOPSIS">SYNOPSIS</h2>
 
-<p>A typical Mustache template:</p>
+<p>A typical Porthole template:</p>
 
 <pre><code>Hello {{name}}
 You have just won {{value}} dollars!
@@ -102,18 +102,18 @@ Well, 6000.0 dollars, after taxes.
 
 <h2 id="DESCRIPTION">DESCRIPTION</h2>
 
-<p>Mustache can be used for HTML, config files, source code -
+<p>Porthole can be used for HTML, config files, source code -
 anything. It works by expanding tags in a template using values
 provided in a hash or object.</p>
 
 <p>We call it "logic-less" because there are no if statements, else
 clauses, or for loops. Instead there are only tags. Some tags are
 replaced with a value, some nothing, and others a series of
-values. This document explains the different types of Mustache tags.</p>
+values. This document explains the different types of Porthole tags.</p>
 
 <h2 id="TAG-TYPES">TAG TYPES</h2>
 
-<p>Tags are indicated by the double mustaches. <code>{{person}}</code> is a tag, as
+<p>Tags are indicated by the double portholes. <code>{{person}}</code> is a tag, as
 is <code>{{#person}}</code>. In both examples, we'd refer to <code>person</code> as the key
 or tag key. Let's talk about the different types of tags.</p>
 
@@ -124,13 +124,13 @@ template will try to find the <code>name</code> key in the current context. If
 there is no <code>name</code> key, nothing will be rendered.</p>
 
 <p>All variables are HTML escaped by default. If you want to return
-unescaped HTML, use the triple mustache: <code>{{{name}}}</code>.</p>
+unescaped HTML, use the triple porthole: <code>{{{name}}}</code>.</p>
 
 <p>You can also use <code>&amp;</code> to unescape a variable: <code>{{&amp; name}}</code>. This may be
 useful when changing delimiters (see "Set Delimiter" below).</p>
 
 <p>By default a variable "miss" returns an empty string. This can usually
-be configured in your Mustache library. The Ruby version of Mustache
+be configured in your Porthole library. The Ruby version of Porthole
 supports raising an exception in this situation, for instance.</p>
 
 <p>Template:</p>
@@ -343,12 +343,12 @@ this:</p>
 <pre><code>&lt;%= partial :next_more, :start =&gt; start, :size =&gt; size %&gt;
 </code></pre>
 
-<p>Mustache requires only this:</p>
+<p>Porthole requires only this:</p>
 
 <pre><code>{{&gt; next_more}}
 </code></pre>
 
-<p>Why? Because the <code>next_more.mustache</code> file will inherit the <code>size</code> and
+<p>Why? Because the <code>next_more.porthole</code> file will inherit the <code>size</code> and
 <code>start</code> methods from the calling context.</p>
 
 <p>In this way you may want to think of partials as includes, or template
@@ -356,13 +356,13 @@ expansion, even though it's not literally true.</p>
 
 <p>For example, this template and partial:</p>
 
-<pre><code>base.mustache:
+<pre><code>base.porthole:
 &lt;h2&gt;Names&lt;/h2&gt;
 {{#names}}
   {{&gt; user}}
 {{/names}}
 
-user.mustache:
+user.porthole:
 &lt;strong&gt;{{name}}&lt;/strong&gt;
 </code></pre>
 
@@ -401,20 +401,20 @@ markup."</p>
 
 <h2 id="COPYRIGHT">COPYRIGHT</h2>
 
-<p>Mustache is Copyright (C) 2009 Chris Wanstrath</p>
+<p>Porthole is Copyright (C) 2009 Chris Wanstrath</p>
 
 <p>Original CTemplate by Google</p>
 
 <h2 id="SEE-ALSO">SEE ALSO</h2>
 
-<p><a href="mustache.1.ron.html" class="man-ref">mustache<span class="s">(1)</span></a>,
-<a href="http://mustache.github.com/" data-bare-link="true">http://mustache.github.com/</a></p>
+<p><a href="porthole.1.ron.html" class="man-ref">porthole<span class="s">(1)</span></a>,
+<a href="http://porthole.github.com/" data-bare-link="true">http://porthole.github.com/</a></p>
 
 
   <ol class='man-decor man-foot man foot'>
     <li class='tl'>DEFUNKT</li>
     <li class='tc'>August 2011</li>
-    <li class='tr'>mustache(5)</li>
+    <li class='tr'>porthole(5)</li>
   </ol>
 
   </div>

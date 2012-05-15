@@ -38,12 +38,12 @@ end
 if command? :ronn
   desc "Show the manual"
   task :man => "man:build" do
-    exec "man man/mustache.1"
+    exec "man man/porthole.1"
   end
 
   desc "Build the manual"
   task "man:build" do
-    sh "ronn -br5 --organization=DEFUNKT --manual='Mustache Manual' man/*.ron"
+    sh "ronn -br5 --organization=DEFUNKT --manual='Porthole Manual' man/*.ron"
   end
 end
 
@@ -54,11 +54,11 @@ end
 
 desc "Push a new version to Gemcutter and publish docs."
 task :publish do
-  require File.dirname(__FILE__) + '/lib/mustache/version'
+  require File.dirname(__FILE__) + '/lib/porthole/version'
 
-  system "git tag v#{Mustache::Version}"
-  sh "gem build mustache.gemspec"
-  sh "gem push mustache-#{Mustache::Version}.gem"
+  system "git tag v#{Porthole::Version}"
+  sh "gem build porthole.gemspec"
+  sh "gem push porthole-#{Porthole::Version}.gem"
   sh "git push origin master --tags"
   sh "git clean -fd"
   exec "rake pages"

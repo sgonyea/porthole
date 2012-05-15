@@ -2,9 +2,9 @@
 $LOAD_PATH.unshift File.dirname(__FILE__)
 require 'helper'
 
-class MustacheTest < Test::Unit::TestCase
+class PortholeTest < Test::Unit::TestCase
   def test_instance_render
-    klass = Class.new(Mustache)
+    klass = Class.new(Porthole)
     klass.template = "Hi %%thing%%!"
     assert_equal "Hi world!", klass.render(:thing => :world)
     assert_equal "Nice.", klass.render("%%compliment%%.", :compliment => "Nice")
@@ -51,14 +51,14 @@ end_complex
   def test_single_line_sections
     html = %(<p class="flash-notice" %%# no_flash %%style="display: none;"%%/ no_flash %%>)
 
-    instance = Mustache.new
+    instance = Porthole.new
     instance.template = html
     instance[:no_flash] = true
     assert_equal %Q'<p class="flash-notice" style="display: none;">', instance.render
   end
 
   def test_strings_as_sections_do_not_enumerate
-    instance = Mustache.new
+    instance = Porthole.new
     instance[:contact] = "Call 1-888-FLOWERS\nAsk for Johnson."
     instance.template = "%%#contact%%<div id='contact'>%%contact%%</div>%%/contact%%"
 
@@ -67,7 +67,7 @@ end_complex
   end
 
   def test_sassy_single_line_sections
-    instance = Mustache.new
+    instance = Porthole.new
     instance[:full_time] = true
     instance.template = "\n %%#full_time%%full time%%/full_time%%\n"
 
@@ -75,21 +75,21 @@ end_complex
   end
 
   def test_sassier_single_line_sections
-    instance = Mustache.new
+    instance = Porthole.new
     instance.template = "\t%%#list%%\r\n\t%%/list%%"
 
     assert_equal "", instance.render
   end
 
   def test_padding_before_section
-    instance = Mustache.new
+    instance = Porthole.new
     instance.template = "\t%%#list%%a%%/list%%"
 
     assert_equal "\taa", instance.render(:list => [1, 2])
   end
 
   def test_padding_before_section_on_eos
-    instance = Mustache.new
+    instance = Porthole.new
     instance.template = "%%#list%%\n\t%%/list%%"
 
     assert_equal "", instance.render(:list => [1, 2])
@@ -98,14 +98,14 @@ end_complex
   def test_two_line_sections
     html = %(<p class="flash-notice" %%# no_flash %%style="display: none;"\n%%/ no_flash %%>)
 
-    instance = Mustache.new
+    instance = Porthole.new
     instance.template = html
     instance[:no_flash] = true
     assert_equal %Q'<p class="flash-notice" style="display: none;"\n>', instance.render
   end
 
   def test_multi_line_sections_preserve_trailing_newline
-    view = Mustache.new
+    view = Porthole.new
     view.template = <<template
 %%#something%%
 yay
@@ -123,7 +123,7 @@ rendered
   def test_single_line_inverted_sections
     html = %(<p class="flash-notice" %%^ flash %%style="display: none;"%%/ flash %%>)
 
-    instance = Mustache.new
+    instance = Porthole.new
     instance.template = html
     assert_equal %Q'<p class="flash-notice" style="display: none;">', instance.render
   end
@@ -218,21 +218,21 @@ end_section
   end
 
   def test_unescaped_ampersand
-    view = Mustache.new
+    view = Porthole.new
     view.template = "<h1>%%& title%%</h1>"
     view[:title] = "Bear > Shark"
     assert_equal '<h1>Bear > Shark</h1>', view.render
   end
 
   def test_classify
-    assert_equal 'TemplatePartial', Mustache.classify('template_partial')
-    assert_equal 'Admin::TemplatePartial', Mustache.classify('admin/template_partial')
+    assert_equal 'TemplatePartial', Porthole.classify('template_partial')
+    assert_equal 'Admin::TemplatePartial', Porthole.classify('admin/template_partial')
   end
 
   def test_underscore
-    assert_equal 'template_partial', Mustache.underscore('TemplatePartial')
-    assert_equal 'admin/template_partial', Mustache.underscore('Admin::TemplatePartial')
-    assert_equal 'views/in/sub/directories', Mustache.underscore('Views::In::Sub::Directories')
+    assert_equal 'template_partial', Porthole.underscore('TemplatePartial')
+    assert_equal 'admin/template_partial', Porthole.underscore('Admin::TemplatePartial')
+    assert_equal 'views/in/sub/directories', Porthole.underscore('Views::In::Sub::Directories')
   end
 
   def test_anon_subclass_underscore
@@ -242,19 +242,19 @@ end_section
 
   def test_namespaced_underscore
     Object.const_set(:Views, Class.new)
-    klass = Class.new(Mustache)
+    klass = Class.new(Porthole)
     klass.view_namespace = Views
     assert_equal 'stat_stuff', klass.underscore('Views::StatStuff')
 
-    assert_equal 'views/stat_stuff', Mustache.underscore('Views::StatStuff')
+    assert_equal 'views/stat_stuff', Porthole.underscore('Views::StatStuff')
   end
 
   def test_render
-    assert_equal 'Hello World!', Mustache.render('Hello World!')
+    assert_equal 'Hello World!', Porthole.render('Hello World!')
   end
 
   def test_render_with_params
-    assert_equal 'Hello World!', Mustache.render('Hello %%planet%%!', :planet => 'World')
+    assert_equal 'Hello World!', Porthole.render('Hello %%planet%%!', :planet => 'World')
   end
 
   def test_render_from_file
@@ -266,7 +266,7 @@ end_section
 </VirtualHost>
 data
     template = File.read(File.dirname(__FILE__) + "/fixtures/passenger.conf")
-    assert_equal expected, Mustache.render(template, :stage => 'production',
+    assert_equal expected, Porthole.render(template, :stage => 'production',
                                                      :server => 'example.com',
                                                      :deploy_to => '/var/www/example.com' )
   end
@@ -279,18 +279,18 @@ data
   RailsEnv production
 </VirtualHost>
 data
-    old_path, Mustache.template_path = Mustache.template_path, File.dirname(__FILE__) + "/fixtures"
-    old_extension, Mustache.template_extension = Mustache.template_extension, "conf"
+    old_path, Porthole.template_path = Porthole.template_path, File.dirname(__FILE__) + "/fixtures"
+    old_extension, Porthole.template_extension = Porthole.template_extension, "conf"
 
-    assert_equal expected, Mustache.render(:passenger, :stage => 'production',
+    assert_equal expected, Porthole.render(:passenger, :stage => 'production',
                                                        :server => 'example.com',
                                                        :deploy_to => '/var/www/example.com' )
 
-    Mustache.template_path, Mustache.template_extension = old_path, old_extension
+    Porthole.template_path, Porthole.template_extension = old_path, old_extension
   end
 
   def test_doesnt_execute_what_it_doesnt_need_to
-    instance = Mustache.new
+    instance = Porthole.new
     instance[:show] = false
     instance.instance_eval do
       def die
@@ -303,7 +303,7 @@ data
   end
 
   def test_reports_unclosed_sections
-    instance = Mustache.new
+    instance = Porthole.new
     instance[:list] = [ :item => 1234 ]
     instance.template = '%%#list%% <li>%%item%%</li> %%/gist%%'
 
@@ -316,7 +316,7 @@ data
   end
 
   def test_unclosed_sections_reports_the_line_number
-    instance = Mustache.new
+    instance = Porthole.new
     instance[:list] = [ :item => 1234 ]
     instance.template = "hi\nmom\n%%#list%% <li>%%item%%</li> %%/gist%%"
 
@@ -329,7 +329,7 @@ data
   end
 
   def test_enumerable_sections_accept_a_hash_as_a_context
-    instance = Mustache.new
+    instance = Porthole.new
     instance[:list] = { :item => 1234 }
     instance.template = '%%#list%% <li>%%item%%</li> %%/list%%'
 
@@ -337,7 +337,7 @@ data
   end
 
   def test_enumerable_sections_accept_a_string_keyed_hash_as_a_context
-    instance = Mustache.new
+    instance = Porthole.new
     instance[:list] = { 'item' => 1234 }
     instance.template = '%%#list%% <li>%%item%%</li> %%/list%%'
 
@@ -345,14 +345,14 @@ data
   end
 
   def test_not_found_in_context_renders_empty_string
-    instance = Mustache.new
+    instance = Porthole.new
     instance.template = '%%#list%% <li>%%item%%</li> %%/list%%'
 
     assert_equal '', instance.render
   end
 
   def test_not_found_in_nested_context_renders_empty_string
-    instance = Mustache.new
+    instance = Porthole.new
     instance[:list] = { :item => 1234 }
     instance.template = '%%#list%% <li>%%prefix%%%%item%%</li> %%/list%%'
 
@@ -360,17 +360,17 @@ data
   end
 
   def test_not_found_in_context_raises_when_asked_to
-    instance = Mustache.new
+    instance = Porthole.new
     instance.raise_on_context_miss = true
     instance.template = '%%#list%% <li>%%item%%</li> %%/list%%'
 
-    assert_raises Mustache::ContextMiss do
+    assert_raises Porthole::ContextMiss do
       instance.render
     end
   end
 
   def test_knows_when_its_been_compiled_when_set_with_string
-    klass = Class.new(Mustache)
+    klass = Class.new(Porthole)
 
     assert ! klass.compiled?
     klass.template = 'Hi, %%person%%!'
@@ -379,7 +379,7 @@ data
 
   def test_knows_when_its_been_compiled_when_using_a_file_template
     klass = Class.new(Simple)
-    klass.template_file = File.dirname(__FILE__) + '/fixtures/simple.mustache'
+    klass.template_file = File.dirname(__FILE__) + '/fixtures/simple.porthole'
 
     assert ! klass.compiled?
     klass.render
@@ -399,7 +399,7 @@ data
   end
 
   def test_knows_when_its_been_compiled_at_the_instance_level
-    klass = Class.new(Mustache)
+    klass = Class.new(Porthole)
     instance = klass.new
 
     assert ! instance.compiled?
@@ -422,7 +422,7 @@ data
   end
 
   def test_sections_which_refer_to_unary_method_call_them_as_proc
-    kls = Class.new(Mustache) do
+    kls = Class.new(Porthole) do
       def unary_method(arg)
         "(#{arg})"
       end
@@ -436,7 +436,7 @@ data
     template = "%%%%foo%%%%"
 
     begin
-      Mustache.render(template, :foo => "defunkt")
+      Porthole.render(template, :foo => "defunkt")
     rescue => e
     end
 
@@ -451,7 +451,7 @@ data
       'lastName?' => 'strath'
     }
 
-    assert_equal "chris j strath", Mustache.render(template, hash)
+    assert_equal "chris j strath", Porthole.render(template, hash)
   end
 
   def test_nested_sections_same_names
@@ -473,7 +473,7 @@ template
       ]
     }
 
-    assert_equal <<expected, Mustache.render(template, data)
+    assert_equal <<expected, Porthole.render(template, data)
 start
 1
 2
@@ -495,7 +495,7 @@ expected
   def test_id_with_nested_context
     html = %(<div>%%id%%</div>\n<div>%%# has_a? %%%%id%%%%/ has_a? %%</div>\n<div>%%# has_b? %%%%id%%%%/ has_b? %%</div>\n)
 
-    instance = Mustache.new
+    instance = Porthole.new
     instance.template = html
     instance[:id] = 3
     instance[:has_a?] = true
@@ -508,7 +508,7 @@ rendered
   end
 
   def test_utf8
-    klass = Class.new(Mustache)
+    klass = Class.new(Porthole)
     klass.template_name = 'utf8'
     klass.template_path = 'test/fixtures'
     view = klass.new
@@ -522,7 +522,7 @@ rendered
   end
 
   def test_indentation
-    view = Mustache.new
+    view = Porthole.new
     view[:name] = 'indent'
     view[:text] = 'puts :indented!'
     view.template = <<template
@@ -540,7 +540,7 @@ template
 
   def test_struct
     person = Struct.new(:name, :age)
-    view = Mustache.new
+    view = Porthole.new
     view[:person] = person.new('Marvin', 25)
     view.template = '%%#person%%%%name%% is %%age%%%%/person%%'
     assert_equal 'Marvin is 25', view.render
@@ -551,18 +551,18 @@ template
   end
 
   def test_custom_escaping
-    view = Class.new(Mustache) do
+    view = Class.new(Porthole) do
       def escapeHTML(str)
         "pong"
       end
     end
 
     assert_equal 'pong', view.render("%%thing%%", :thing => "nothing")
-    assert_equal 'nothing', Mustache.render("%%thing%%", :thing => "nothing")
+    assert_equal 'nothing', Porthole.render("%%thing%%", :thing => "nothing")
   end
 
   def test_implicit_iterator
-    view = Mustache.new
+    view = Porthole.new
     view.template = "%%#people%%* %%.%%\n%%/people%%"
     view[:people] = %w( Chris Mark Scott )
 
@@ -574,7 +574,7 @@ text
   end
 
   def test_unescaped_implicit_iterator
-    view = Mustache.new
+    view = Porthole.new
     view.template = "%%#people%%* %%{.}%%\n%%/people%%"
     view[:people] = %w( Chris Mark Scott )
 
@@ -602,7 +602,7 @@ text
 
   def test_inherited_attributes
     Object.const_set :TestNamespace, Module.new
-    base = Class.new(Mustache)
+    base = Class.new(Porthole)
     tmpl = Class.new(base)
 
     {:template_path      => File.expand_path('./foo'),
@@ -633,7 +633,7 @@ template
       ]
     }
 
-    assert_equal <<expected, Mustache.render(template, data)
+    assert_equal <<expected, Porthole.render(template, data)
 start
 1
 2
@@ -661,7 +661,7 @@ FROM
   DUMMY1
 template
 
-    view = Mustache.new
+    view = Porthole.new
     view[:cols] = [{:name => 'Name'}, {:name => 'Age'}, {:name => 'Weight'}]
     view.template = template
 

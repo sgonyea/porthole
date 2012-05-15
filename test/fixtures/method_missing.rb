@@ -1,7 +1,7 @@
 $LOAD_PATH.unshift File.dirname(__FILE__) + '/../lib'
-require 'mustache'
+require 'porthole'
 
-class MethodMissing < Mustache
+class MethodMissing < Porthole
   self.template = '[ %%#list%%%%.%% %%/list%%]'
 
   def method_missing(name, *args, &block)

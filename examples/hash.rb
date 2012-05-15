@@ -1,8 +1,8 @@
 $LOAD_PATH.unshift File.dirname(__FILE__) + '/../lib'
-require 'mustache'
+require 'porthole'
 
-Mustache.template_file = File.dirname(__FILE__) + '/simple.mustache'
-view = Mustache.new
+Porthole.template_file = File.dirname(__FILE__) + '/simple.porthole'
+view = Porthole.new
 
 print "Your name: "
 view[:name] = gets

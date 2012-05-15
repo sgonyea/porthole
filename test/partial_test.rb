@@ -13,7 +13,7 @@ end_partial
   end
 
   def test_partial_with_slashes
-    klass = Class.new(Mustache)
+    klass = Class.new(Porthole)
     klass.template = '%%> test/fixtures/inner_partial%%'
     view = klass.new
     view[:title] = 'success'
@@ -148,12 +148,12 @@ end_partial
   end
 end
 
-class InnerThing < Mustache
+class InnerThing < Porthole
   def partial(p) self.class end
   def name;      self.class end
 end
 
-class OuterThing < Mustache
+class OuterThing < Porthole
   def inner
     InnerThing.new
   end
@@ -162,7 +162,7 @@ class OuterThing < Mustache
   def name;      self.class end
 end
 
-class MiddleThing < Mustache
+class MiddleThing < Porthole
   def partial(name) "%%#{name}%%" end
   def some_partial; "ok" end
 end
