@@ -7,9 +7,9 @@ Gem::Specification.new do |s|
   s.date              = Time.now.strftime('%Y-%m-%d')
   s.summary           =
         "Porthole is a framework-agnostic way to render logic-free views."
-  s.homepage          = "http://github.com/defunkt/porthole"
-  s.email             = "chris@ozmm.org"
-  s.authors           = [ "Chris Wanstrath", "Magnus Holm", "Pieter van de Bruggen" ]
+  s.homepage          = "http://github.com/sgonyea/porthole"
+  s.email             = "me@sgonyea.com"
+  s.authors           = [ "Scott Gonyea" ]
   s.files             = %w( README.md Rakefile LICENSE )
   s.files            += Dir.glob("lib/**/*")
   s.files            += Dir.glob("bin/**/*")
@@ -17,16 +17,10 @@ Gem::Specification.new do |s|
   s.files            += Dir.glob("test/**/*")
   s.executables       = %w( porthole )
   s.description       = <<desc
-Inspired by ctemplate, Porthole is a framework-agnostic way to render
-logic-free views.
+Porthole is a ripoff of Mustache. It replaces the use of {{ }} with %% %%, because god hates me.
 
-As ctemplates says, "It emphasizes separating logic from presentation:
-it is impossible to embed application logic in this template
-language.
-
-Think of Porthole as a replacement for your views. Instead of views
-consisting of ERB or HAML with random helpers and arbitrary logic,
-your views are broken into two parts: a Ruby class and an HTML
-template.
+I removed the Mustache authors from the list of authors, as I don't want to associate their names
+with this project. You can find the *real* list of authors by viewing the Ruby Gem "mustache" or
+by going to: http://github.com/defunkt/mustache
 desc
 end

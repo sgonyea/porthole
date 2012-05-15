@@ -1,5 +1,11 @@
+# GO AWAY
+
+You ended up here by mistake. This project is stupid and is only valuable
+if you need (not "want") to use "%%foo%%" for your templates, rather than
+"{{foo}}".
+
 Porthole
-=========
+========
 
 Inspired by [ctemplate][1] and [et][2], Porthole is a
 framework-agnostic way to render logic-free views.
@@ -46,7 +52,7 @@ Quick example:
 
     >> require 'porthole'
     => true
-    >> Porthole.render("Hello {{planet}}", :planet => "World!")
+    >> Porthole.render("Hello %%planet%%", :planet => "World!")
     => "Hello World!"
 
 We've got an `examples` folder but here's the canonical one:
@@ -74,11 +80,11 @@ reference others, some return values, some return only booleans.
 
 Now let's write the template:
 
-    Hello {{name}}
-    You have just won {{value}} dollars!
-    {{#in_ca}}
-    Well, {{taxed_value}} dollars, after taxes.
-    {{/in_ca}}
+    Hello %%name%%
+    You have just won %%value%% dollars!
+    %%#in_ca%%
+    Well, %%taxed_value%% dollars, after taxes.
+    %%/in_ca%%
 
 This template references our view methods. To bring it all together,
 here's the code to render actual HTML;
@@ -108,10 +114,10 @@ Escaping
 Porthole does escape all values when using the standard double
 Porthole syntax. Characters which will be escaped: `& \ " < >`. To
 disable escaping, simply use triple portholes like
-`{{{unescaped_variable}}}`.
+`%%%unescaped_variable%%%`.
 
-Example: Using `{{variable}}` inside a template for `5 > 2` will
-result in `5 &gt; 2`, where as the usage of `{{{variable}}}` will
+Example: Using `%%variable%%` inside a template for `5 > 2` will
+result in `5 &gt; 2`, where as the usage of `%%%variable%%%` will
 result in `5 > 2`.
 
 
@@ -124,8 +130,8 @@ class-based and this more procedural style at your leisure.
 
 Given this template (winner.porthole):
 
-    Hello {{name}}
-    You have just won {{value}} bucks!
+    Hello %%name%%
+    You have just won %%value%% bucks!
 
 We can fill in the values at will:
 
@@ -181,11 +187,11 @@ for './blah.xml'
 
 Feel free to set the template directly:
 
-    Simple.template = 'Hi {{person}}!'
+    Simple.template = 'Hi %%person%%!'
 
 Or set a different template for a single instance:
 
-    Simple.new.template = 'Hi {{person}}!'
+    Simple.new.template = 'Hi %%person%%!'
 
 Whatever works.
 
@@ -272,9 +278,9 @@ Now:
 Finally, our template might look like this:
 
     <ul>
-      {{# users}}
-        <li><img src="{{ gravatar }}"> {{ login }}</li>
-      {{/ users}}
+      %%# users%%
+        <li><img src="%% gravatar %%"> %% login %%</li>
+      %%/ users%%
     </ul>
 
 
